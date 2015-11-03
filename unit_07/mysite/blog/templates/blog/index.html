@@ -1,0 +1,14 @@
+{% load staticfiles %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'blog/css/style.css' %}" />
+
+<h1>Janus Blog Latest publications</h1>
+{% if latest_blog_list %}
+    <ul>
+    {% for item in latest_blog_list %}
+        <li><a href="{% url 'blog:detail' item.id %}">{{ item.title }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No items are available.</p>
+{% endif %}
