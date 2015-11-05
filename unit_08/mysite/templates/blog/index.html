@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load listlastnews %} <!-- загрузить listlastnews тег -->
+{% block head_title %} {{ block.super }} Janus Blog {% endblock %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'blog/css/style.css' %}" />
+
+{% block sidebar %} 
+    <style type="text/css"> 
+        #sidebar { float: right; border: 1px dotted #ccc; padding: 4px; } 
+    </style> 
+
+    <div id="sidebar"> 
+     {% lastnews %}
+
+    </div> 
+{% endblock %}
+
+{% block content %}
+    <div class="jumbotron">
+        <h1>Janus Blog Latest publications</h1>
+    </div>
+
+            {% if latest_blog_list %}
+                <ul>
+                {% for item in latest_blog_list %}
+                    <li><a href="{% url 'blog:detail' item.id %}">{{ item.title }}</a></li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No items are available.</p>
+            {% endif %}
+
+
+{% endblock %}
