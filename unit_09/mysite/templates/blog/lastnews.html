@@ -1,0 +1,10 @@
+<div id = "news">
+<h4>Последние статьи</h4>
+<ul class="links">
+	{% for item in last5news %}
+       
+       <li><a href="{% url 'blog:detail' item.id %}">{{ item.title }}</a></li>
+    {% endfor %}
+	
+</ul>
+</div>
