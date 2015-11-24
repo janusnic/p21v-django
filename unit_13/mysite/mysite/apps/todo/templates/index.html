@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <title>Сделай сам To-Do lists</title>
+        <link href="/static/base.css" rel="stylesheet">
+    </head>
+    <body>
+        <h1>Сделай сам - Your To-Do list</h1>
+        <form method="POST"  action="/todo/new">{% csrf_token %}
+        <input name="item_text" id="id_new_item" placeholder="Добавить в список дел" />
+        {% if error %}
+                        <div class="form-group has-error">
+                            <span class="help-block">{{ error }}</span>
+                        </div>
+                    {% endif %}
+        </form>
+        
+    </body>
+</html>

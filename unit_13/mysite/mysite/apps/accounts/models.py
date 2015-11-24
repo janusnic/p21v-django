@@ -1,10 +1,18 @@
-# -*- coding: utf-8 -*-
+from authtools.models import AbstractNamedUser
 from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+
+class User(AbstractNamedUser):
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['name']
+
+    class Meta:
+        ordering = ('-date_joined',)
+
  
 class Profile(models.Model):
     # Relations
@@ -23,9 +31,9 @@ class Profile(models.Model):
     # Custom Properties
     @property
     def username(self):
-        return self.user.display_name   
+        return self.user.name   
  
-    display_name = models.CharField(max_length='128')
+    
     avatar =   models.ImageField(_("Profile Pic"), upload_to="images/", blank=True, null=True)
     biography = models.TextField(null=True, blank=True)
     homepage = models.URLField(null=True, blank=True)
@@ -45,7 +53,7 @@ class Profile(models.Model):
         ordering = ("user",)
  
     def __str__(self):
-        return self.user.display_name
+        return self.user.name
         
 class SocialInfo(models.Model):
     SOCIAL_CHOICES = (
@@ -56,7 +64,7 @@ class SocialInfo(models.Model):
     ('fa-weibo', 'Weibo'),)
     ('fa-bookmark', 'Other'),
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(User)
     social = models.CharField(choices=SOCIAL_CHOICES, max_length='128')
     url = models.URLField()
 
@@ -64,8 +72,8 @@ class SocialInfo(models.Model):
         return user.name + '-' + social
 
 
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+@receiver(post_save, sender=User)
 def create_profile_for_new_user(sender, instance=None, created=False, **kwargs):
     if created:
-        profile = Profile(user=instance, defaults={'display_name':instance.username})
+        profile = Profile(user=instance)
         profile.save()
