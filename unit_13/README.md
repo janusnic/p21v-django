@@ -42,6 +42,7 @@ class UserForm(forms.ModelForm):
 
 Поле модели                     Поле формы
 -------------------------------------------
+```
 AutoField                       Не представлено на форме
 
 BigIntegerField                 IntegerField с атрибутом min_value равным -9223372036854775808 и атрибутом max_value равным 9223372036854775807.
@@ -74,7 +75,7 @@ TextField                       CharField с widget=forms.Textarea
 
 TimeField                       TimeField
 URLField                        URLField
-
+```
 ForeignKey и ManyToManyField поля модели являются особыми случаями:
 
 - Поле ForeignKey модели представлено полем формы ModelChoiceField, которое является обычным ChoiceField, но с вариантами значений, полученными из QuerySet.
