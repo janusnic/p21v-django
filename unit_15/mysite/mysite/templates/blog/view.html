@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+        <div id="singlepost">
+                <p>{{ result.title }}</p>
+                <span>{{ result.publish_date|date:"SHORT_DATE_FORMAT" }} 
+                </span>
+                <p>
+                {% autoescape off %}
+                {{ result.content }} 
+                {% endautoescape %}
+
+                </p>
+                        <!-- Comments  --> 
+                  {% if comments %} 
+                      <p>Comments: {{ comments|length }} </p> 
+                  {% endif %} 
+
+                  {% for comment in comments %} 
+                      <div class="comment"> 
+                          <div class="time">{{ comment.created }} | {{ comment.user }}</div> 
+                          <div class="body">{{ comment.comment|linebreaks }}</div> 
+                      </div> 
+                  {% endfor %}
+
+                    <!-- Next/Prev page links  --> 
+      {% if comments.object_list and comments.paginator.num_pages > 1 %} 
+        <div class="pagination" style="margin-top: 20px; margin-left: -20px; "> 
+            <span class="step-links"> 
+                {% if comments.has_previous %} 
+                    <a href= "?page={{ comments.previous_page_number }}">newer entries &lt;&lt; </a> 
+                {% endif %} 
+
+                <span class="current"> 
+                    &nbsp;Page {{ comments.number }} of {{ comments.paginator.num_pages }} 
+                </span> 
+
+                {% if comments.has_next %} 
+                    <a href="?page={{ comments.next_page_number }}"> &gt;&gt; older entries</a> 
+                {% endif %} 
+            </span> 
+        </div> 
+       {% endif %}
+
+
+                  {% if user.is_authenticated %} 
+                  <div id="addc">Add a comment</div> 
+                  <!-- Comment form  --> 
+                      <form action="/blog/add_comment/{{ result.slug }}/" method="POST">{% csrf_token %} <!-- защита против CSRF атак -->
+                          <div id="cform"> 
+                  
+                              <p>{{ form.comment|linebreaks }}</p> 
+                          </div> 
+                          <div id="submit"><input type="submit" value="Submit"></div> 
+                      </form> 
+                      {% endif %}       
+                  </div>
+
+        </div>
+{% endblock %}
