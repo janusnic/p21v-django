@@ -1,3 +1,0 @@
-test: grunt test
-worker: django-admin.py rqworker high default low
-scheduler: rqscheduler

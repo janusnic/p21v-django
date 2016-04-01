@@ -1,4 +1,0 @@
-web: django-admin.py runserver_plus
-worker: django-admin.py rqworker high default low
-grunt: grunt dev
-scheduler: rqscheduler
