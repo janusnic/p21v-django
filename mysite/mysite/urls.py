@@ -15,24 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-
 from home import views as view_home
-from blog import views
 
 urlpatterns = [
     url(r'^$', view_home.home, name='home'),
-    
-    
-    url(r'^blog/2016/$', views.special_case_2016),
-    url(r'^blog/([0-9]{4})/$', views.year_archive),
-    url(r'^blog/([0-9]{4})/([0-9]{2})/$', views.month_archive),
-    url(r'^blog/([0-9]{4})/([0-9]{2})/([0-9]+)/$', views.article_detail),
-
     url(r'^blog/', include('blog.urls', namespace="blog")),
-
-    url(r'^blog/(?P<year>[0-9]{4})/$', views.year_archive),
-    url(r'^blog/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/$', views.month_archive),
-    url(r'^blog/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/(?P<day>[0-9]{2})/$', views.article_detail),
-    
     url(r'^admin/', admin.site.urls),
 ]

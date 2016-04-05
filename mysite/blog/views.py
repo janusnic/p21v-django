@@ -1,9 +1,16 @@
-from django.shortcuts import render
-from .models import Article
+from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponse
+from .models import Article, Category
+import datetime
 
 def special_case_2016(request):
-    item = {'title':'Special Case 2016','topics':10}    
-    return render(request, "blog/special_case_2016.html", {'item':item})
+    items = Article.objects.filter(publish_date__year=2016)  
+    return render(request, "blog/special_case_2016.html", {'items':items})
+
+def latest(request):
+    items = Article.objects.filter(title__startswith='QuerySet').filter(publish_date__gte=datetime.date(2015, 1, 1))  
+    
+    return render(request, "blog/special_case_2016.html", {'items':items})
 
 def year_archive(request,yy):
     item = {'title':'Year Archive','content':yy}    
@@ -22,9 +29,9 @@ def index(request):
     context = {'blog_list': blog_list}
     return render(request, 'blog/index.html', context)
 
-def latest(request):
-    latest_blog_list = Article.objects.order_by('-publish_date')[:10]
-    context = {'latest_blog_list': latest_blog_list}
+def news(request):
+    blog_list = Article.objects.filter(category__name='news')
+    context = {'blog_list': blog_list}
     return render(request, 'blog/index.html', context)
 
 def detail0(request, blog_id):
@@ -41,3 +48,10 @@ def detail(request, blog_id):
     except Article.DoesNotExist:
         raise Http404("Article does not exist")
     return render(request, 'blog/detail.html', {'item': item})
+
+def detail(request, blog_id):
+    item = get_object_or_404(Article, pk=blog_id)
+    return render(request, 'blog/detail.html', {'item': item})
+
+def vote(request, blog_id):
+    return HttpResponse("You're voting on article %s." % blog_id)    

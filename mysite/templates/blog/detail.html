@@ -2,13 +2,13 @@
 {% block head_title %}My Cool Django Blog{% endblock %}
 
 {% block content %} 
-      <!-- Example row of columns -->
+      <!-- row of columns -->
       <div class="row">
         <div class="col-md-8">
           <h2>{{ item.title }}</h2>
-         
           <p> {{ item.content }} </p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+          <p> {{ item.publish_date }} </p>
+          <p><a class="btn btn-default" href="{% url 'blog:index' %}" role="button">All publications &raquo;</a></p>
         </div>
         <div class="col-md-4">
           <h2>Heading</h2>
