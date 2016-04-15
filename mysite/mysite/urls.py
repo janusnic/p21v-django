@@ -16,9 +16,22 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from home import views as view_home
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^$', view_home.home, name='home'),
     url(r'^blog/', include('blog.urls', namespace="blog")),
     url(r'^admin/', admin.site.urls),
+    url(r'^ckeditor/', include('ckeditor_uploader.urls')),
 ]
+if settings.DEBUG:
+    try:
+        from django.conf.urls.static import static
+        urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+    # Should only occur when debug mode is on for production testing
+    except ImportError as e:
+        import logging
+        l = logging.getLogger(__name__)
+        l.warning(e)

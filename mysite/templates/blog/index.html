@@ -1,27 +1,39 @@
 {% extends "base.html" %}
-{% block head_title %}My Cool Django Blog{% endblock %}
+{% load latest_posts %}
+{% block head_title %} {{ block.super }} - All Blog Publications{% endblock %}
 
-{% block content %} 
-      <!-- row of columns -->
-      <div class="row">
-        <div class="col-md-8">
-          <h2>Publications</h2>
+        {% block content %} 
+        
+        <div class="row">
+          <div class="col-md-8">
+          {% block main %} 
+            <h2>Publications</h2>
               {% if blog_list %}
                 {% for item in blog_list %}
-                  <h3><a href ="{% url 'blog:detail' item.id %}">{{ item.title }}</a></h3>
-                    <p><a class="btn btn-default" href="{% url 'blog:detail' item.id %}" role="button">View details &raquo;</a></p>
+                  <h3><a href ="{% url 'blog:detail' item.slug %}">{{ item.title }}</a></h3>
+                    <p><a class="btn btn-default" href="{% url 'blog:detail' item.slug %}" role="button">View details &raquo;</a></p>
                 {% endfor %}
               {% else %}
                 <li>Sorry, no items in this list.</li>
-              {% endif %}
-          
-        </div>
-        <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-       </div>
+             {% endif %}
+          {% endblock main %} 
+          </div>
         
-      </div>
-
-{% endblock content %}
+           <div class="col-md-4">   
+             {% block aside %} 
+                {{ block.super }}
+                <h2>Latest Posts</h2>
+                  <div>
+                      {% latest_posts %}
+                  </div>
+                  <h3>Monthly Archive</h3>
+                  <div>
+                      {% for month in months %} 
+                           <a href="{% url 'blog:archive' month.0 month.1 %}">{{ month.2 }}</a> <br /> 
+                      {% endfor %}
+                  </div>         
+             {% endblock aside %}
+           </div>    
+         
+         </div>
+        {% endblock content %}

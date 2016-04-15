@@ -1,21 +1,40 @@
 {% extends "base.html" %}
-{% block head_title %}My Cool Django Blog{% endblock %}
+{% load latest_posts %}
+{% block head_title %} {{ block.super }} - Blog Topik{% endblock %}
 
-{% block content %} 
-      <!-- row of columns -->
-      <div class="row">
-        <div class="col-md-8">
-          <h2>{{ item.title }}</h2>
-          <p> {{ item.content }} </p>
-          <p> {{ item.publish_date }} </p>
-          <p><a class="btn btn-default" href="{% url 'blog:index' %}" role="button">All publications &raquo;</a></p>
-        </div>
-        <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-       </div>
+        {% block content %} 
         
-      </div>
+        <div class="row">
+          <div class="col-md-8">
+          {% block main %} 
+          <h2>{{ item.title }}</h2>
+          {% autoescape off %}
+                <p> {{ item.content }} </p>
+                {% endautoescape %}
+          
+          <p> {{ item.publish_date|date:"D d M Y" }} | <a href ="{% url 'blog:category' item.category.slug %}">{{ item.category }}</a> | {% for tag in item.tags.all %}
+                <span> {{ tag.name }} </span> {% endfor %}
+                {% if item.views > 1 %}
+                    ({{ item.views }} views)
+                {% elif item.views == 1 %}
+                    ({{ item.views }} view)
+                {% endif %}
+          </p>
 
-{% endblock content %}
+          <p><a class="btn btn-default" href="{% url 'blog:index' %}" role="button">All publications &raquo;</a></p>
+          {% endblock main %} 
+          
+          </div>
+        
+           <div class="col-md-4">   
+             {% block aside %} 
+                {{ block.super }}  
+                <h2>Latest Posts</h2>
+                  <div>
+                      {% latest_posts %}
+                  </div>        
+             {% endblock aside %}
+           </div>    
+         
+         </div>
+        {% endblock content %}

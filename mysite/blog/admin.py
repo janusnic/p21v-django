@@ -2,6 +2,10 @@ from django.contrib import admin
 
 from .models import Category, Tag, Article
 
+from ckeditor.widgets import CKEditorWidget
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
+from django import forms
+
 class CategoryAdmin(admin.ModelAdmin):
     
     list_display = ('name', 'slug')
@@ -20,6 +24,16 @@ class TagAdmin(admin.ModelAdmin):
 
 admin.site.register(Tag, TagAdmin)
 
+class ArticleAdminForm(forms.ModelForm):
+    
+    content = forms.CharField(widget=CKEditorWidget())
+    content = forms.CharField(widget=CKEditorUploadingWidget())
+    
+    class Meta:
+        model = Article
+        fields = '__all__'
+
+
 class ArticleAdmin(admin.ModelAdmin):
     list_display = ('title', 'publish_date', 'status', 'was_published_recently')
     list_filter = ['publish_date']
@@ -30,6 +44,8 @@ class ArticleAdmin(admin.ModelAdmin):
     filter_horizontal = ('tags',)
 
     prepopulated_fields = {"slug": ("title",)}
+
+    form = ArticleAdminForm
 
     date_hierarchy = 'publish_date'
     readonly_fields = ('publish_date','created_date')
