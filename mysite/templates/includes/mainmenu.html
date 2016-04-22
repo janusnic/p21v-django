@@ -7,7 +7,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/">Project name</a>
+          <a class="navbar-brand" href="/">Janus Blog</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
 
@@ -17,15 +17,26 @@
             <li><a href="/blog/news">News</a></li>
           </ul>
 
-          <form class="navbar-form navbar-right" role="form">
-            <div class="form-group">
-              <input type="text" placeholder="Email" class="form-control">
-            </div>
-            <div class="form-group">
-              <input type="password" placeholder="Password" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-success">Sign in</button>
-          </form>
+          <ul class="nav  navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+              <li><a href="/userprofile/profile/">Profile</a></li>
+              <li><a href="/userprofile/logout/">Logout</a></li>
+            {% else %}
+              <li><a href="/userprofile/register">Register</a></li>
+
+              <form class="navbar-form navbar-right" role="form" method="post" action="/userprofile/login/">
+            {% csrf_token %}
+              <div class="form-group">
+                <input type="text" placeholder="Username" name="username" class="form-control">
+              </div>
+              <div class="form-group">
+                <input type="password" placeholder="Password" name="password" class="form-control">
+              </div>
+              <button type="submit" class="btn btn-success">Sign in</button>
+            </form>
+          {% endif %}
+         </ul>
+
         </div><!--/.navbar-collapse -->
       </div>
     </nav>

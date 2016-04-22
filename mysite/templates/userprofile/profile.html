@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block head_title %} {{ block.super }} - Profile {{ user.username }} {% endblock %}
+
+{% block content %}
+
+     <div class="row">
+          <div class="col-md-8">
+          {% block main %} 
+          <h2>Welcome back {{ user.username }}!</h2>
+
+          <p>
+            Your First Name: {{ first_name }}
+          </p>
+          <p>
+            Your Last Name: {{ last_name }}
+          </p>
+
+          {% endblock main %} 
+          
+          </div>
+        
+           <div class="col-md-4">   
+             {% block aside %} 
+                <h2>My Profile</h2>
+                  <div>
+                  <ul>
+                  <li><a href="/userprofile/profile/">My Profile</a></li>
+                  <li><a href="/userprofile/profile/edit/">Edit Profile</a></li>
+                  </ul>
+
+                  </div>        
+             {% endblock aside %}
+           </div>    
+         
+         </div>
+
+{% endblock %}
