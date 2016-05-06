@@ -31,7 +31,12 @@
                       {% for month in months %} 
                            <a href="{% url 'blog:archive' month.0 month.1 %}">{{ month.2 }}</a> <br /> 
                       {% endfor %}
-                  </div>         
+                  </div> 
+                  <form class="" method="get" action="{% url 'blog:search_for_blog' %}">
+                      <input name="q" id="id_q" type="text" class="form-control" placeholder="Search" />
+                      <button type="submit">Search</button>
+                  </form>
+        
              {% endblock aside %}
            </div>    
          

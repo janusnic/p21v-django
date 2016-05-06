@@ -14,9 +14,47 @@
     background-color: green;
 }
 
+/* contact page css start here */
+
+.addul{border-bottom:1px solid #dcdcdc;padding-bottom: 20px;margin-bottom: 20px; text-align:left;}
+
+.addul span{font: normal normal normal 15px/1.4 Arial, Helvetica, sans-serif ;color:#383838;padding-left: 8px;}
+
+.addul1{ border-bottom:1px solid #dcdcdc;padding-bottom: 20px;margin-bottom: 20px;text-align:left;}
+
+.addul1 span{font: normal normal normal 15px/1.4 Arial, Helvetica, sans-serif ;color:#383838;padding-left: 8px;}
+
+.addul2{border-bottom:1px solid #dcdcdc;padding-bottom: 20px;margin-bottom: 20px;text-align:left;}
+
+.addul2 span{font: normal normal normal 15px/1.4 Arial, Helvetica, sans-serif ;color:#383838;padding-left: 8px;}
+
+.addul3{ border-bottom:1px solid #dcdcdc;padding-bottom: 20px;margin-bottom: 20px;text-align:left;}
+
+.addul3 span{font: normal normal normal 15px/1.4 Arial, Helvetica, sans-serif ;color:#383838;padding-left: 8px;}
+
+.for-border3{ background:#f3f3f3; height:1px;margin: 35px 0px 1px 0px;}
+
+.mapname{ font: normal normal normal 24px/1 Open Sans,Arial, Helvetica, sans-serif ;color:#26292b;margin:0px 0px 20px 0px;}
+.mapimg{ border:1px solid #e9e8e8; background:#fff;padding: 5px 5px 5px 6px;}
+
+/* contact page css end here */
+.contactname{font: normal normal normal 25px/1 OpenSans-Regular,Arial, Helvetica, sans-serif ;color:#fff;margin:0px; padding:0; padding-left: 15px;}
+
+.contactform-div{ width:645px;}
+
+.h2class4{ font: normal normal normal 24px/1 Open Sans,Arial, Helvetica, sans-serif ;color:#26292b;margin:40px 0px 20px 0px;}
 
 
+p input:focus{ background: #eee; }
+p input {width:303px; height:38px; background:#fff; border:1px solid #e9e8e8; border-radius:3px; margin:4px 0px 24px 0px; padding-left:11px;box-shadow: 0px 0px 0px 2px #f1f1f1;
+font: normal normal normal 14px/1.4 Arial, Helvetica, sans-serif ; outline: none;font-family: 'FontAwesome';
+    -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
 
+p label  {width:400px; height:38px; }
+p textarea {width:303px;border:1px solid #e9e8e8; border-radius:3px;}
+p textarea:focus{ background: #eee; }
 
 
 

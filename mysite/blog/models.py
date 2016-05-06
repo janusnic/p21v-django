@@ -2,6 +2,9 @@ from django.db import models
 import datetime
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
+from django.contrib.auth.models import User
+
+from django.utils.translation import ugettext_lazy as _
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -44,3 +47,20 @@ class Article(models.Model):
 
     def __str__(self):
         return '%s' % (self.title)
+
+@python_2_unicode_compatible
+class Comment(models.Model):
+    content = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+    path = models.IntegerField(blank=True, default=0) #Can't be null as using append to path for replies and can't append to a None path
+    depth = models.PositiveSmallIntegerField(default=0)
+    user = models.ForeignKey(User, null=True, blank=True)
+    name = models.CharField(max_length=50, null=True, blank=True)
+    website = models.URLField(null=True, blank=True)
+    article = models.ForeignKey('Article', blank=True, related_name='comments')
+    parent = models.ForeignKey('self', null=True, blank=True, related_name='child')
+    spam = models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return self.content

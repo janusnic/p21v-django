@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load latest_posts %}
+{% load humanize %}
 {% block head_title %} {{ block.super }} - Blog Topik{% endblock %}
 
         {% block content %} 
@@ -22,6 +23,36 @@
           </p>
 
           <p><a class="btn btn-default" href="{% url 'blog:index' %}" role="button">All publications &raquo;</a></p>
+           <h3 id="comments">Comments:</h3>
+  <form id="postcomment" method="post" action="{% url 'blog:detail' item.slug %}">
+    <ul>
+        {% if not request.user.is_authenticated %}
+        <li><label for="id_name">{{form.name.label}}:</label> {{form.name}} <span class="about">(optional)</span></li>
+        <li><label for="id_website">{{form.website.label}}:</label> {{form.website}} <span class="about">(optional)</span></li>
+      {% endif %}
+        <li>{{form.content}}</li>
+      <li><small><em><a href="http://daringfireball.net/projects/markdown/syntax">(Supports Markdown Syntax)</a></em></small></li>
+        
+        <li><input type="submit" value="Submit Comment" /></li>
+        <li>{{form.ancestor}}</li>
+    </ul>
+    {% csrf_token %}
+  </form>
+  <ul id="commenters">
+    {% for comment in comment_tree %}
+      {% if comment.user %}
+        <li id="{{comment.id}}" class="comment" style="margin-left:{{comment.depth|add:comment.depth}}em;"><p class="poster"><span class="user">{% if comment.user.get_full_name %}{{comment.user.get_full_name}}{% else %}{{comment.user.username}}{% endif %}</span> - {{comment.date|naturaltime}}</p><p>{{comment.content|safe}}</p><p><a href="" class="reply">reply</a></p></li>
+      {% elif comment.name %}
+        <li id="{{comment.id}}" class="comment" style="margin-left:{{comment.depth|add:comment.depth}}em;"><p class="poster">{% if comment.website %}<a href="{{comment.website}}">{{comment.name}}</a>{% else %}{{comment.name}}{% endif %} - {{comment.date|naturaltime}}</p><p>{{comment.content|safe}}</p><p><a href="" class="reply">reply</a></p></li>
+      {% elif comment.deleted %}
+        <li id="{{comment.id}}" class="comment" style="margin-left:{{comment.depth|add:comment.depth}}em;">[Deleted] - {{comment.date|naturaltime}}<p>This comment was removed</p></li>
+      {% else %}
+        <li id="{{comment.id}}" class="comment" style="margin-left:{{comment.depth|add:comment.depth}}em;"><p class="poster">Anonymous - {{comment.date|naturaltime}}</p><p>{{comment.content|safe}}</p><p><a href="" class="reply">reply</a></p></li>
+      {% endif %}
+    {% empty %}
+      <li>There are currently no comments. You can be first!</li>
+    {% endfor %}
+  </ul>
           {% endblock main %} 
           
           </div>

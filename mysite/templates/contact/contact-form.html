@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load latest_posts %}
+{% block head_title %} {{ block.super }} - Blog Contact{% endblock %}
+
+        {% block content %} 
+        
+        <div class="row">
+          <div class="col-md-8">
+          {% block main %} 
+<!-- Header section End -->
+    <!--contact us section start-->
+    <div class="orange-container top-margin-88">
+        <div class="inner ">
+            <h1 class="contactname left">Contact Us</h1>
+            <div class="bridcrumb right">Home &gt;  contact us</div>
+            <div class="clear"></div>
+        </div>
+    </div>
+
+    <div class="inner2">
+        <div class="row">
+            <!-- Contact information -->
+
+            <div class="col-md-4">
+                <h2 class=" h2class4">Contact Address</h2>
+                <div class="addul"><i class="fa fa-road"></i><span>Your Address here, Location, City, Country </span>
+                </div>
+                <div class="addul1"><i class="fa fa-phone"></i><span>+44 (0) 1232 456 789</span>
+                </div>
+                <div class="addul2"><i class="fa fa-envelope"></i><span>info@example.com</span>
+                </div>
+                <div class="addul3"><i class="fa fa-check"></i><span>www.example.com</span>
+                </div>
+            </div>
+            <!-- Contact information end-->
+
+            <!-- Contact form -->
+            <div class="col-lg-8">
+                <h2 class=" h2class4">Get in Touch</h2>
+                <div class="form1">
+                    <form role="form" action="" method="post">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                       <div class="input-group ">
+                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                            {{ form.name.errors }}
+                            <label for="{{ form.name.id_for_label }}">Your name:</label>
+                            {{ form.name }}
+                        </div>
+                        <div class="input-group ">
+                            <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                             {% if form.email.errors %}
+                                <ol>
+                                {% for error in form.email.errors %}
+                                    <li><strong>{{ error|escape }}</strong></li>
+                                {% endfor %}
+                                </ol>
+                            {% endif %}
+                             <label for="{{ form.email.id_for_label }}">Your email address:</label>
+                             {{ form.email }}
+
+                        </div>
+                        <div class="input-group ">
+                            {{ form.body.errors }}
+                            <label for="{{ form.body.id_for_label }}">Your message:</label>
+                            {{ form.body }}
+                        </div>
+                    
+                        
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </form>
+                </div>
+                <div class="height"></div>
+            </div>
+            <!-- Contact form end-->
+        </div>
+    </div>
+
+          {% endblock main %} 
+          </div>
+        
+           <div class="col-md-4">   
+             {% block aside %} 
+                {{ block.super }}
+                <h2>Latest Posts</h2>
+                  <div>
+                      {% latest_posts %}
+                  </div>
+                 
+             {% endblock aside %}
+           </div>    
+         
+         </div>
+        {% endblock content %}
