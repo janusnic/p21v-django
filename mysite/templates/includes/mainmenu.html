@@ -20,10 +20,11 @@
 
           <ul class="nav  navbar-nav navbar-right">
             {% if user.is_authenticated %}
-              <li><a href="/userprofile/profile/">Profile</a></li>
-              <li><a href="/userprofile/logout/">Logout</a></li>
+              <li><a href="/userprofile/profile/"><code>{{ user.username }}</code></a></li>
+              <li><a href="/userprofile/logout/"><code>Logout</code></a></li>
             {% else %}
               <li><a href="/userprofile/register">Register</a></li>
+              <li><a href="/soc">Social</a></li>
 
               <form class="navbar-form navbar-right" role="form" method="post" action="/userprofile/login/">
             {% csrf_token %}

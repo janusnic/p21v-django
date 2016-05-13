@@ -8,12 +8,13 @@ class UserProfile(models.Model):
     # This line is required. Links UserProfile to a User model instance.
     user = models.OneToOneField(User, related_name='profile')
     timezone = models.CharField(max_length=50, default='Europe/Kiev')
+    photo = models.TextField(blank=True)
 
     # The additional attributes we wish to include.
     
     location = models.CharField(max_length=140, blank=True)  
     gender = models.CharField(max_length=140, blank=True)  
-    age = models.IntegerField(blank=True)
+    age = models.IntegerField(blank=True,default=0)
     company = models.CharField(max_length=50, blank=True)
         
     website = models.URLField(blank=True)

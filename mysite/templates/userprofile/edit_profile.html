@@ -7,6 +7,9 @@
           <div class="col-md-8">
           {% block main %} 
           <h2>Profile of {{ user.username }}'s</h2>
+          <img src="{{user.profile.photo}}" class="img-account">
+          
+          
 
                 <form id="user_form" method="post" action="/userprofile/profile/edit/"
                         enctype="multipart/form-data">

@@ -20,12 +20,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    url(r'^$', view_home.home, name='home'),
+    url(r'^$', view_home.index, name='index'),
+    url(r'^soc/$', view_home.home, name='home'),
     url(r'^blog/', include('blog.urls', namespace="blog")),
     url(r'^contact/', include('contact.urls', namespace="contact")),
     url(r'^userprofile/', include('userprofile.urls', namespace="userprofile")),
     url(r'^admin/', admin.site.urls),
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
+    url(r'', include('social.apps.django_app.urls', namespace='social'))
 ]
 if settings.DEBUG:
     try:

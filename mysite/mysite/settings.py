@@ -40,10 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.humanize',
+    'social.apps.django_app.default',
     'ckeditor',
     'ckeditor_uploader',
     'blog',
     'userprofile',
+    'home',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -66,14 +68,77 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.core.context_processors.i18n',
+                'django.core.context_processors.media',
                 'django.contrib.messages.context_processors.messages',
+                'social.apps.django_app.context_processors.backends',
+                'django.template.context_processors.request',
+    
             ],
         },
     },
 ]
+
+AUTHENTICATION_BACKENDS = (
+    
+    'social.backends.facebook.FacebookOAuth2',
+    'social.backends.google.GoogleOAuth2',
+    
+    #'social.backends.google.GooglePlusAuth',
+    
+    'social.backends.twitter.TwitterOAuth',
+    #   'social.backends.vk.VKOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+
+ 
+)
+
+#AUTH_USER_MODEL = 'User'
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+URL_PATH = ''
+SOCIAL_AUTH_STRATEGY = 'social.strategies.django_strategy.DjangoStrategy'
+SOCIAL_AUTH_STORAGE = 'social.apps.django_app.default.models.DjangoStorage'
+SOCIAL_AUTH_GOOGLE_OAUTH_SCOPE = [
+    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/userinfo.profile'
+]
+# SOCIAL_AUTH_EMAIL_FORM_URL = '/signup-email'
+SOCIAL_AUTH_EMAIL_FORM_HTML = 'email_signup.html'
+SOCIAL_AUTH_EMAIL_VALIDATION_FUNCTION = 'mysite.home.mail.send_validation'
+SOCIAL_AUTH_EMAIL_VALIDATION_URL = '/email-sent/'
+# SOCIAL_AUTH_USERNAME_FORM_URL = '/signup-username'
+SOCIAL_AUTH_USERNAME_FORM_HTML = 'username_signup.html'
+
+SOCIAL_AUTH_PIPELINE = (
+    'social.pipeline.social_auth.social_details',
+    'social.pipeline.social_auth.social_uid',
+    'social.pipeline.social_auth.auth_allowed',
+    'social.pipeline.social_auth.social_user',
+    'social.pipeline.user.get_username',
+    #'mysite.home.pipeline.require_email',
+    'social.pipeline.mail.mail_validation',
+    'social.pipeline.user.create_user',
+    'social.pipeline.social_auth.associate_user',
+    'social.pipeline.debug.debug',
+    'social.pipeline.social_auth.load_extra_data',
+    'social.pipeline.user.user_details',
+    'social.pipeline.debug.debug',
+    'home.pipeline.get_profile_picture',
+)
+
+SOCIAL_AUTH_TWITTER_KEY = 'gTVg6h1fPPK0qyUj2Z7M5lKmW'
+SOCIAL_AUTH_TWITTER_SECRET = 'EGNPWNHuYqZ74sK08EtsKwIzA4I5HIbpXhcdeFfe1DainSuApL'
+
+SOCIAL_AUTH_FACEBOOK_KEY = '593509674160367'
+SOCIAL_AUTH_FACEBOOK_SECRET = '409d3d42ef73f9c97a15189b98288ded'
+
+SOCIAL_AUTH_ALWAYS_ASSOCIATE = True
+
+AUTH_PROFILE_MODULE = 'userprofile.UserProfile'
+
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
@@ -111,15 +176,14 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+# LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'uk'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Kiev'
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
+
 
 
 # Static files (CSS, JavaScript, Images)

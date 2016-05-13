@@ -7,6 +7,7 @@
           <div class="col-md-8">
           {% block main %} 
           <h2>Welcome back {{ user.username }}!</h2>
+          <img src="{{ user.profile.photo }}" class="img-account">
 
           <p>
             Your First Name: {{ first_name }}
