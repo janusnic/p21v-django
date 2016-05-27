@@ -1,14 +1,14 @@
-# p21v-django unit_07
+# p21v-django unit_08
 
-Social Auth
-===========
-https://github.com/omab/python-social-auth
+shop
+====
 
-    pip install python-social-auth
+    ./manage.py startapp shop
 
 
-settings.py
------------
+Application definition
+-----------------------
+
         INSTALLED_APPS = [
             'django.contrib.admin',
             'django.contrib.auth',
@@ -16,661 +16,158 @@ settings.py
             'django.contrib.sessions',
             'django.contrib.messages',
             'django.contrib.staticfiles',
-            'django.contrib.sites',
-            'django.contrib.humanize',
-            'social.apps.django_app.default',
-            'ckeditor',
-            'ckeditor_uploader',
-            'blog',
-            'userprofile',
+
+            'shop',
         ]
 
+models.py
+----------
 
-        LANGUAGE_CODE = 'uk'
-        TIME_ZONE = 'Europe/Kiev'
-        USE_I18N = True
-        USE_L10N = True
-        USE_TZ = True
+        from django.db import models
+        from django.core.urlresolvers import reverse
+        from django.utils.encoding import python_2_unicode_compatible
 
+        @python_2_unicode_compatible
+        class Category(models.Model):
+            name = models.CharField(max_length=200, db_index=True)
+            slug = models.SlugField(max_length=200, db_index=True, unique=True)
 
-        TEMPLATE_CONTEXT_PROCESSORS = (
-           'django.contrib.auth.context_processors.auth',
-           'django.core.context_processors.debug',
-           'django.core.context_processors.i18n',
-           'django.core.context_processors.media',
-           'django.core.context_processors.static',
-           'django.core.context_processors.tz',
-           'django.contrib.messages.context_processors.messages',
-           'social.apps.django_app.context_processors.backends',
-           'social.apps.django_app.context_processors.login_redirect',
-        )
+            class Meta:
+                ordering = ('name',)
+                verbose_name = 'category'
+                verbose_name_plural = 'categories'
 
-        AUTHENTICATION_BACKENDS = (
-           'social.backends.facebook.FacebookOAuth2',
-           'social.backends.google.GoogleOAuth2',
-           'social.backends.twitter.TwitterOAuth',
-           'django.contrib.auth.backends.ModelBackend',
-        )
+            def __str__(self):
+                return self.name
 
+            def get_absolute_url(self):
+                return reverse('shop:product_list_by_category', args=[self.slug])
 
-        AUTHENTICATION_BACKENDS = (
-            'social.backends.amazon.AmazonOAuth2',
-            'social.backends.angel.AngelOAuth2',
-            'social.backends.aol.AOLOpenId',
-            'social.backends.appsfuel.AppsfuelOAuth2',
-            'social.backends.beats.BeatsOAuth2',
-            'social.backends.behance.BehanceOAuth2',
-            'social.backends.belgiumeid.BelgiumEIDOpenId',
-            'social.backends.bitbucket.BitbucketOAuth',
-            'social.backends.box.BoxOAuth2',
-            'social.backends.clef.ClefOAuth2',
-            'social.backends.coinbase.CoinbaseOAuth2',
-            'social.backends.coursera.CourseraOAuth2',
-            'social.backends.dailymotion.DailymotionOAuth2',
-            'social.backends.deezer.DeezerOAuth2',
-            'social.backends.disqus.DisqusOAuth2',
-            'social.backends.douban.DoubanOAuth2',
-            'social.backends.dropbox.DropboxOAuth',
-            'social.backends.dropbox.DropboxOAuth2',
-            'social.backends.eveonline.EVEOnlineOAuth2',
-            'social.backends.evernote.EvernoteSandboxOAuth',
-            'social.backends.facebook.FacebookAppOAuth2',
-            'social.backends.facebook.FacebookOAuth2',
-            'social.backends.fedora.FedoraOpenId',
-            'social.backends.fitbit.FitbitOAuth2',
-            'social.backends.flickr.FlickrOAuth',
-            'social.backends.foursquare.FoursquareOAuth2',
-            'social.backends.github.GithubOAuth2',
-            'social.backends.google.GoogleOAuth',
-            'social.backends.google.GoogleOAuth2',
-            'social.backends.google.GoogleOpenId',
-            'social.backends.google.GooglePlusAuth',
-            'social.backends.google.GoogleOpenIdConnect',
-            'social.backends.instagram.InstagramOAuth2',
-            'social.backends.jawbone.JawboneOAuth2',
-            'social.backends.kakao.KakaoOAuth2',
-            'social.backends.linkedin.LinkedinOAuth',
-            'social.backends.linkedin.LinkedinOAuth2',
-            'social.backends.live.LiveOAuth2',
-            'social.backends.livejournal.LiveJournalOpenId',
-            'social.backends.mailru.MailruOAuth2',
-            'social.backends.mendeley.MendeleyOAuth',
-            'social.backends.mendeley.MendeleyOAuth2',
-            'social.backends.mineid.MineIDOAuth2',
-            'social.backends.mixcloud.MixcloudOAuth2',
-            'social.backends.nationbuilder.NationBuilderOAuth2',
-            'social.backends.odnoklassniki.OdnoklassnikiOAuth2',
-            'social.backends.open_id.OpenIdAuth',
-            'social.backends.openstreetmap.OpenStreetMapOAuth',
-            'social.backends.persona.PersonaAuth',
-            'social.backends.podio.PodioOAuth2',
-            'social.backends.rdio.RdioOAuth1',
-            'social.backends.rdio.RdioOAuth2',
-            'social.backends.readability.ReadabilityOAuth',
-            'social.backends.reddit.RedditOAuth2',
-            'social.backends.runkeeper.RunKeeperOAuth2',
-            'social.backends.skyrock.SkyrockOAuth',
-            'social.backends.soundcloud.SoundcloudOAuth2',
-            'social.backends.spotify.SpotifyOAuth2',
-            'social.backends.stackoverflow.StackoverflowOAuth2',
-            'social.backends.steam.SteamOpenId',
-            'social.backends.stocktwits.StocktwitsOAuth2',
-            'social.backends.stripe.StripeOAuth2',
-            'social.backends.suse.OpenSUSEOpenId',
-            'social.backends.thisismyjam.ThisIsMyJamOAuth1',
-            'social.backends.trello.TrelloOAuth',
-            'social.backends.tripit.TripItOAuth',
-            'social.backends.tumblr.TumblrOAuth',
-            'social.backends.twilio.TwilioAuth',
-            'social.backends.twitter.TwitterOAuth',
-            'social.backends.vk.VKOAuth2',
-            'social.backends.weibo.WeiboOAuth2',
-            'social.backends.wunderlist.WunderlistOAuth2',
-            'social.backends.xing.XingOAuth',
-            'social.backends.yahoo.YahooOAuth',
-            'social.backends.yahoo.YahooOpenId',
-            'social.backends.yammer.YammerOAuth2',
-            'social.backends.yandex.YandexOAuth2',
-            'social.backends.vimeo.VimeoOAuth1',
-            'social.backends.lastfm.LastFmAuth',
-            'social.backends.moves.MovesOAuth2',
-            'social.backends.vend.VendOAuth2',
-            'social.backends.email.EmailAuth',
-            'social.backends.username.UsernameAuth',
-            'django.contrib.auth.backends.ModelBackend',
-        )
+        @python_2_unicode_compatible
+        class Product(models.Model):
+            category = models.ForeignKey(Category, related_name='products')
+            name = models.CharField(max_length=200, db_index=True)
+            slug = models.SlugField(max_length=200, db_index=True)
+            image = models.ImageField(upload_to='products/%Y/%m/%d', blank=True)
+            description = models.TextField(blank=True)
+            price = models.DecimalField(max_digits=10, decimal_places=2)
+            stock = models.PositiveIntegerField()
+            available = models.BooleanField(default=True)
+            created = models.DateTimeField(auto_now_add=True)
+            updated = models.DateTimeField(auto_now=True, help_text="Please use the following format: <em>YYYY-MM-DD</em>.")
+            
+            class Meta:
+                ordering = ('-created',)
+                index_together = (('id', 'slug'),)
 
-        AUTH_USER_MODEL = 'app.CustomUser'
+            def __str__(self):
+                return self.name
 
-        LOGIN_URL = '/login/'
-        LOGIN_REDIRECT_URL = '/done/'
-        URL_PATH = ''
-
-Стратегии в Python Social Auth - различные фрейворки, которые поддерживает Python Social Auth.  Мы используем Django Social Auth.
-
-        SOCIAL_AUTH_STRATEGY = 'social.strategies.django_strategy.DjangoStrategy'
-        SOCIAL_AUTH_STORAGE = 'social.apps.django_app.default.models.DjangoStorage'
-        SOCIAL_AUTH_GOOGLE_OAUTH_SCOPE = [
-            'https://www.googleapis.com/auth/drive',
-            'https://www.googleapis.com/auth/userinfo.profile'
-        ]
+            def get_absolute_url(self):
+                return reverse('shop:product_detail', args=[self.id, self.slug])
 
 
-        # SOCIAL_AUTH_EMAIL_FORM_URL = '/signup-email'
-        SOCIAL_AUTH_EMAIL_FORM_HTML = 'email_signup.html'
-        SOCIAL_AUTH_EMAIL_VALIDATION_FUNCTION = 'example.app.mail.send_validation'
-        SOCIAL_AUTH_EMAIL_VALIDATION_URL = '/email-sent/'
-        # SOCIAL_AUTH_USERNAME_FORM_URL = '/signup-username'
-        SOCIAL_AUTH_USERNAME_FORM_HTML = 'username_signup.html'
+makemigrations
+--------------
 
-        SOCIAL_AUTH_PIPELINE = (
-            'social.pipeline.social_auth.social_details',
-            'social.pipeline.social_auth.social_uid',
-            'social.pipeline.social_auth.auth_allowed',
-            'social.pipeline.social_auth.social_user',
-            'social.pipeline.user.get_username',
-            'example.app.pipeline.require_email',
-            'social.pipeline.mail.mail_validation',
-            'social.pipeline.user.create_user',
-            'social.pipeline.social_auth.associate_user',
-            'social.pipeline.debug.debug',
-            'social.pipeline.social_auth.load_extra_data',
-            'social.pipeline.user.user_details',
-            'social.pipeline.debug.debug'
-        )
-
-
-migrate
--------
-
+        ./manage.py makemigrations shop
         ./manage.py migrate
 
-
-Регистрации в сетях
--------------------
-Для начала нам надо получить ключи от необходимых социальных сетей, на странице проекта в GitHub есть инструкции для множества социальных сетей.
-
-Facebook
+admin.py
 --------
-Зайдите на https://developers.facebook.com/apps/ и нажмите на + Create New App. Введите название приложения (название сайта или проекта), после сабмита формы вы увидите реквизиты "App ID" и "App Secret".
 
-Добавьте их в свой settings.py, пример:
+        from django.contrib import admin
+        from .models import Category, Product
 
+        class CategoryAdmin(admin.ModelAdmin):
+            list_display = ['name', 'slug']
+            prepopulated_fields = {'slug': ('name',)}
+        admin.site.register(Category, CategoryAdmin)
 
-SOCIAL_AUTH_FACEBOOK_KEY = …
-SOCIAL_AUTH_FACEBOOK_SECRET = …
 
-#FACEBOOK_APP_ID = '696381432507483'
-#FACEBOOK_API_SECRET = '15afb0bbeb173aae12e8e875ffccc7a4'
-Теперь заполните поле "App Domains", укажите через пробел домены (например один локальный, другой продакшен домен). Поставьте галочку на "Website with Facebook Login" и введите адрес для редиректа, я редиректю в корень продакшен сайта.
+        class ProductAdmin(admin.ModelAdmin):
+            list_display = ['name', 'slug', 'category', 'price', 'stock', 'available', 'created', 'updated']
+            list_filter = ['available', 'created', 'updated', 'category']
+            list_editable = ['price', 'stock', 'available']
+            prepopulated_fields = {'slug': ('name',)}
+        admin.site.register(Product, ProductAdmin)
 
-Twitter
--------
-Зайдите на https://dev.twitter.com/ и введите логин и пароль от вашей учетной записи в Twitter. Далее заходите на https://dev.twitter.com/apps и жмёте на Create a new application, заполните нужные поля и соглашаетесь с правилами, после чего вы получите "Consumer key" и "Consumer secret".
 
-Добавьте их в settings.py, пример:
-
-SOCIAL_AUTH_TWITTER_KEY = …
-SOCIAL_AUTH_TWITTER_SECRET = …
-
-#TWITTER_CONSUMER_KEY = 'G2wMq4KYpTmgZDcjg0EzQ'
-#TWITTER_CONSUMER_SECRET = 'rGHMGIbOwIEpoxjXzOahc2KmvxY8h10DpZ90LwqEjec'
-По умолчанию вам выдадут Access level "Read-only", для авторизации этого вам хватит. Рекомендую прочитать The Application Permission Model.
-
-
-Вконтакте
----------
-Зайдите на страницу http://vk.com/developers.php и нажмите Создать приложение, выберите Тип "Веб-сайт" и введите адрес сайта и имя домена. В ответ получите "ID приложения" и "Защищенный ключ".
-
-Добавьте их в settings.py, пример:
-
-VK_APP_ID = '1234567'
-VKONTAKTE_APP_ID = VK_APP_ID
-VK_API_SECRET = 'Q0owlQESOXRYd2lcgnLa'
-VKONTAKTE_APP_SECRET = VK_API_SECRET
-
-Google+
--------
-Зайдите на страницу https://code.google.com/apis/console/ , нажмите Create, введите требуемые данные и во вкладке API Access увидите "Client ID" и "Client secret".
-
-Добавьте их в settings.py, пример:
-
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = …
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = …
-
-#GOOGLE_OAUTH2_CLIENT_ID = '123456789.apps.googleusercontent.com'
-#GOOGLE_OAUTH2_CLIENT_SECRET = 'p0dJSDjs-dAJsdSAdaSDadasdrt'
-
-
-GitHub
-------
-Зайдите на страницу https://github.com/settings/applications/new и введите логин и пароль от вашей учетной записи в GitHub. Введите имя приложения, адреса сайта для "URL" и "Callback URL". И получите "Client ID" и "Client Secret", после чего добавьте их в settings.py:
-
-GITHUB_APP_ID = 'da3bad06987041629b96'
-
-
-template:
----------
-        <ul class="nav  navbar-nav navbar-right">
-            {% if user.is_authenticated %}
-            <li><a href="{% url 'users:logout' %}">Logout</a></li>
-            <li><a href="{% url 'users:profile' slug=user.username %}">{{ user.username }}</a></li>
-            {% else %}
-            <li><a href="{% url 'users:userprofiles_registration' %}">Register</a></li>
-            <li><a href="{% url 'users:login' %}">Login</a></li>
-            <li><a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">Login with Facebook</a></li>
-            <li><a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}">Login with Google</a></li>
-            <li><a href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">Login with Twitter</a></li>
-          {% endif %}
-         </ul>
-
-
-Create an application
----------------------
-https://apps.twitter.com/app/new
-
-Application Details
-        Name * djangosite
-
-Your application name. This is used to attribute the source of a tweet and in user-facing authorization screens. 32 characters max.
-        Description * Django dev site
-
-Your application description, which will be shown in user-facing authorization screens. Between 10 and 200 characters max.
-        Website *
-
-        http://127.0.0.1:8000
-
-        Callback URL    http://127.0.0.1:8000/home
-
-Your application's publicly accessible home page, where users can go to download, make use of, or find out more information about your application. This fully-qualified URL is used in the source attribution for tweets created by your application and will be shown in user-facing authorization screens.
-(If you don't have a URL yet, just put a placeholder here but remember to change it later.)
-Callback URL
-
-Where should we return after successfully authenticating? OAuth 1.0a applications should explicitly specify their oauth_callback URL on the request token step, regardless of the value given here. To restrict your application from using callbacks, leave this field blank.
-
-Developer Agreement
-
-Yes, I agree
-
-class UserProfile
-------------------
-        from django.db import models
-        from django.contrib.auth.models import User
-        from django.utils import timezone
-        from django.utils.encoding import python_2_unicode_compatible
-        from django.db.models.signals import post_save
-        @python_2_unicode_compatible
-        class UserProfile(models.Model):
-            # This line is required. Links UserProfile to a User model instance.
-            user = models.OneToOneField(User, related_name='profile')
-            timezone = models.CharField(max_length=50, default='Europe/Kiev')
-            photo = models.TextField(blank=True)
-
-            # The additional attributes we wish to include.
-            
-            location = models.CharField(max_length=140, blank=True)  
-            gender = models.CharField(max_length=140, blank=True)  
-            age = models.IntegerField(blank=True,default=0)
-            company = models.CharField(max_length=50, blank=True)
-                
-            website = models.URLField(blank=True)
-            profile_picture = models.ImageField(upload_to='thumbpath', blank=True)
-
-            # Override the __str__() method to return out something meaningful!
-            def __str__(self):
-                return self.user.username
-
-        def create_user_profile(sender, instance, created, **kwargs):
-            if created:
-                UserProfile.objects.create(user=instance)
-        post_save.connect(create_user_profile, sender=User)
-
-pipeline.py
------------
-        # -*- coding: utf-8 -*-
-        from django.shortcuts import redirect
-
-        from social.pipeline.partial import partial
-        from userprofile.models import UserProfile
-
-        @partial
-        def require_email(strategy, details, user=None, is_new=False, *args, **kwargs):
-            if kwargs.get('ajax') or user and user.email:
-                return
-            elif is_new and not details.get('email'):
-                email = strategy.request_data().get('email')
-                if email:
-                    details['email'] = email
-                else:
-                    return redirect('require_email')
-
-
-        def get_profile_picture(backend, user, response, details, *args, **kwargs):
-            url = None
-            profile = UserProfile.objects.get_or_create(user = user)[0]
-            if backend.name == 'facebook':
-                profile.photo  = 'http://graph.facebook.com/{0}/picture'.format(response['id'])
-            elif backend.name == "twitter":
-                if response['profile_image_url'] != '':
-                    if not response.get('default_profile_image'):
-                        avatar_url = response.get('profile_image_url_https')
-                        if avatar_url:
-                            avatar_url = avatar_url.replace('_normal.', '_bigger.')
-                            profile.photo = avatar_url
-            elif backend.name == "google-oauth2":
-                if response['image'].get('url') is not None:
-                    profile.photo  = response['image'].get('url')
-
-
-            profile.save()
-
-
-settings.py
------------
-
-        SOCIAL_AUTH_TWITTER_KEY = 'gTVg6h1fPPK0qyUj2Z7M5lKmW'
-        SOCIAL_AUTH_TWITTER_SECRET = 'EGNPWNHuYqZ74sK08EtsKwIzA4I5HIbpXhcdeFfe1DainSuApL'
-
-        SOCIAL_AUTH_FACEBOOK_KEY = '593509674160367'
-        SOCIAL_AUTH_FACEBOOK_SECRET = '409d3d42ef73f9c97a15189b98288ded'
-
-        SOCIAL_AUTH_ALWAYS_ASSOCIATE = True
-
-        AUTH_PROFILE_MODULE = 'userprofile.UserProfile'
-
-
-        WSGI_APPLICATION = 'mysite.wsgi.application'
-
-        SOCIAL_AUTH_PIPELINE = (
-            'social.pipeline.social_auth.social_details',
-            'social.pipeline.social_auth.social_uid',
-            'social.pipeline.social_auth.auth_allowed',
-            'social.pipeline.social_auth.social_user',
-            'social.pipeline.user.get_username',
-            'social.pipeline.mail.mail_validation',
-            'social.pipeline.user.create_user',
-            'social.pipeline.social_auth.associate_user',
-            'social.pipeline.social_auth.load_extra_data',
-            'social.pipeline.user.user_details',
-            'login_demo_app.pipeline.get_profile_picture',
-        )
-
-profile.html
-------------
-            {% extends "base.html" %}
-            {% block head_title %} {{ block.super }} - Profile {{ user.username }} {% endblock %}
-
-            {% block content %}
-                 <div class="row">
-                      <div class="col-md-8">
-                      {% block main %} 
-                      <h2>Welcome back {{ user.username }}!</h2>
-
-                      <img src="{{ user.profile.photo }}" class="img-account">
-
-                      <p>
-                        Your First Name: {{ first_name }}
-                      </p>
-                      <p>
-                        Your Last Name: {{ last_name }}
-                      </p>
-                      {% endblock main %} 
-                      </div>
-                       <div class="col-md-4">   
-                         {% block aside %} 
-                            <h2>My Profile</h2>
-                              <div>
-                              <ul>
-                              <li><a href="/userprofile/profile/">My Profile</a></li>
-                              <li><a href="/userprofile/profile/edit/">Edit Profile</a></li>
-                              </ul>
-                              </div>        
-                         {% endblock aside %}
-                       </div>    
-                     </div>
-            {% endblock %}
-
-
-
-templatetags/backend_utils.py
------------------------------
-            import re
-
-            from django import template
-
-            from social.backends.oauth import OAuthAuth
-
-
-            register = template.Library()
-
-            name_re = re.compile(r'([^O])Auth')
-
-
-            @register.filter
-            def backend_name(backend):
-                name = backend.__class__.__name__
-                name = name.replace('OAuth', ' OAuth')
-                name = name.replace('OpenId', ' OpenId')
-                name = name.replace('Sandbox', '')
-                name = name_re.sub(r'\1 Auth', name)
-                return name
-
-
-            @register.filter
-            def backend_class(backend):
-                return backend.name.replace('-', ' ')
-
-
-            @register.filter
-            def icon_name(name):
-                return {
-                    'stackoverflow': 'stack-overflow',
-                    'google-oauth': 'google',
-                    'google-oauth2': 'google',
-                    'google-openidconnect': 'google',
-                    'yahoo-oauth': 'yahoo',
-                    'facebook-app': 'facebook',
-                    'email': 'envelope',
-                    'vimeo': 'vimeo-square',
-                    'linkedin-oauth2': 'linkedin',
-                    'vk-oauth2': 'vk',
-                    'live': 'windows',
-                    'username': 'user',
-                }.get(name, name)
-
-
-            @register.filter
-            def social_backends(backends):
-                backends = [(name, backend) for name, backend in backends.items()
-                                if name not in ['username', 'email']]
-                backends.sort(key=lambda b: b[0])
-                return [backends[n:n + 10] for n in range(0, len(backends), 10)]
-
-
-            @register.filter
-            def legacy_backends(backends):
-                backends = [(name, backend) for name, backend in backends.items()
-                                if name in ['username', 'email']]
-                backends.sort(key=lambda b: b[0])
-                return backends
-
-
-            @register.filter
-            def oauth_backends(backends):
-                backends = [(name, backend) for name, backend in backends.items()
-                                if issubclass(backend, OAuthAuth)]
-                backends.sort(key=lambda b: b[0])
-                return backends
-
-
-            @register.simple_tag(takes_context=True)
-            def associated(context, backend):
-                user = context.get('user')
-                context['association'] = None
-                if user and user.is_authenticated():
-                    try:
-                        context['association'] = user.social_auth.filter(
-                            provider=backend.name
-                        )[0]
-                    except IndexError:
-                        pass
-                return ''
-
-pipeline.py
------------
-        from django.shortcuts import redirect
-
-        from social.pipeline.partial import partial
-
-
-        @partial
-        def require_email(strategy, details, user=None, is_new=False, *args, **kwargs):
-            if kwargs.get('ajax') or user and user.email:
-                return
-            elif is_new and not details.get('email'):
-                email = strategy.request_data().get('email')
-                if email:
-                    details['email'] = email
-                else:
-                    return redirect('require_email')
-mail.py
--------
-        from django.conf import settings
-        from django.core.mail import send_mail
-        from django.core.urlresolvers import reverse
-
-
-        def send_validation(strategy, backend, code):
-            url = '{0}?verification_code={1}'.format(
-                reverse('social:complete', args=(backend.name,)),
-                code.code
-            )
-            url = strategy.request.build_absolute_uri(url)
-            send_mail('Validate your account', 'Validate your account {0}'.format(url),
-                      settings.EMAIL_FROM, [code.email], fail_silently=False)
-
-decorators.py
--------------
-        from functools import wraps
-
-        from django.template import RequestContext
-        from django.shortcuts import render_to_response
-
-
-        def render_to(tpl):
-            def decorator(func):
-                @wraps(func)
-                def wrapper(request, *args, **kwargs):
-                    out = func(request, *args, **kwargs)
-                    if isinstance(out, dict):
-                        out = render_to_response(tpl, out, RequestContext(request))
-                    return out
-                return wrapper
-            return decorator
 
 views.py
 --------
 
-        import json
+        from django.shortcuts import render, get_object_or_404
+        from .models import Category, Product
+        
 
-        from django.conf import settings
-        from django.http import HttpResponse, HttpResponseBadRequest
-        from django.shortcuts import redirect
-        from django.contrib.auth.decorators import login_required
-        from django.contrib.auth import logout as auth_logout, login
-
-        from social.backends.oauth import BaseOAuth1, BaseOAuth2
-        from social.backends.google import GooglePlusAuth
-        from social.backends.utils import load_backends
-        from social.apps.django_app.utils import psa
-
-        from .decorators import render_to
-
-
-        def logout(request):
-            """Logs out user"""
-            auth_logout(request)
-            return redirect('/')
+        def product_list(request, category_slug=None):
+            category = None
+            categories = Category.objects.all()
+            products = Product.objects.filter(available=True)
+            if category_slug:
+                category = get_object_or_404(Category, slug=category_slug)
+                products = products.filter(category=category)
+            return render(request, 'shop/product/list.html', {'category': category,
+                                                              'categories': categories,
+                                                              'products': products})
 
 
-        def context(**extra):
-            return dict({
-                'plus_id': getattr(settings, 'SOCIAL_AUTH_GOOGLE_PLUS_KEY', None),
-                'plus_scope': ' '.join(GooglePlusAuth.DEFAULT_SCOPE),
-                'available_backends': load_backends(settings.AUTHENTICATION_BACKENDS)
-            }, **extra)
-
-
-        @render_to('home.html')
-        def home(request):
-            """Home view, displays login mechanism"""
-            if request.user.is_authenticated():
-                return redirect('done')
-            return context()
-
-
-        @login_required
-        @render_to('home.html')
-        def done(request):
-            """Login complete view, displays user data"""
-            return context()
-
-
-        @render_to('home.html')
-        def validation_sent(request):
-            return context(
-                validation_sent=True,
-                email=request.session.get('email_validation_address')
-            )
-
-
-        @render_to('home.html')
-        def require_email(request):
-            backend = request.session['partial_pipeline']['backend']
-            return context(email_required=True, backend=backend)
-
-
-        @psa('social:complete')
-        def ajax_auth(request, backend):
-            if isinstance(request.backend, BaseOAuth1):
-                token = {
-                    'oauth_token': request.REQUEST.get('access_token'),
-                    'oauth_token_secret': request.REQUEST.get('access_token_secret'),
-                }
-            elif isinstance(request.backend, BaseOAuth2):
-                token = request.REQUEST.get('access_token')
-            else:
-                raise HttpResponseBadRequest('Wrong backend type')
-            user = request.backend.do_auth(token, ajax=True)
-            login(request, user)
-            data = {'id': user.id, 'username': user.username}
-            return HttpResponse(json.dumps(data), mimetype='application/json')
-
-urls.py
--------
-        from django.conf.urls import patterns, include, url
-        from django.contrib import admin
-
-        urlpatterns = [
+        def product_detail(request, id, slug):
+            product = get_object_or_404(Product, id=id, slug=slug, available=True)
             
-            url(r'^email-sent/', views.validation_sent),
-            url(r'^login/$', views.home),
-            url(r'^logout/$', views.logout),
-            url(r'^done/$', views.done, name='done'),
-            url(r'^ajax-auth/(?P<backend>[^/]+)/$', views.ajax_auth,
-                name='ajax-auth'),
-            url(r'^email/$', views.require_email, name='require_email'),
-            url(r'', include('social.apps.django_app.urls', namespace='social'))
-        ]
+            return render(request,
+                          'shop/product/detail.html',
+                          {'product': product,
+                        })
 
 
-URLs:
------
+shop/product/list.html
+----------------------
+
+        {% extends "shop/base.html" %}
+        {% load static %}
+
+        {% block title %}
+            {% if category %}{{ category.name }}{% else %}Products{% endif %}
+        {% endblock %}
+
+        {% block content %}
+            <div id="sidebar">
+                <h3>Categories</h3>
+                <ul>
+                    <li {% if not category %}class="selected"{% endif %}>
+                        <a href="{% url "shop:product_list" %}">All</a>
+                    </li>
+                {% for c in categories %}
+                    <li {% if category.slug == c.slug %}class="selected"{% endif %}>
+                        <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+            <div id="main" class="product-list">
+                <h1>{% if category %}{{ category.name }}{% else %}Products{% endif %}</h1>
+                {% for product in products %}
+                    <div class="item">
+                        <a href="{{ product.get_absolute_url }}">
+                            <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}">
+                        </a>
+                        <a href="{{ product.get_absolute_url }}">{{ product.name }}</a><br>
+                        ${{ product.price }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endblock %}
+
+mysite/urls.py
+--------------
 
         urlpatterns = [
             url(r'^$', view_home.index, name='index'),
             url(r'^soc/$', view_home.home, name='home'),
             url(r'^blog/', include('blog.urls', namespace="blog")),
+            url(r'^shop/', include('shop.urls', namespace='shop')),
             url(r'^contact/', include('contact.urls', namespace="contact")),
             url(r'^userprofile/', include('userprofile.urls', namespace="userprofile")),
             url(r'^admin/', admin.site.urls),
@@ -679,1143 +176,1301 @@ URLs:
         ]
 
 
-templates/home/home.html
--------------------------
-        {% load backend_utils %}
-        <!doctype html>
-        <html>
-          <head>
-            <title>Python Social Auth</title>
-            <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
-            <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css" rel="stylesheet">
-            <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-            <style>
-              h1 { padding: 0 30px; }
-              .col-md-2 { width: 18.6667%; }
-              .buttons { display: block; table-layout: fixed; border-radius: 7px; border: 1px solid #ccc;
-                         margin: 20px; background: #eee; padding: 30px; }
-              .buttons > div .btn { margin: 5px 10px; }
-              .buttons > div:not(:first-child) { margin-top: 10px; border-top: 1px solid #ccc;
-                                                 padding-top: 10px; text-align: center; }
-              .user-details { text-align: center; font-size: 16px; font-weight: bold; }
-              .disconnect-form { padding: 0; margin: 0px 10px; }
-              .disconnect-form > a { display: block; margin: 5px 0 !important; }
-            </style>
-          </head>
-          <body>
-            <h1>Python Social Auth</h1>
+shop/urls.py
+------------
 
-            <div class="buttons">
-              {% if user.is_authenticated %}
-                <div class="user-details">
-                  You are logged in as <code>{{ user.username }}</code>!
-                </div>
-              {% endif %}
+        from django.conf.urls import url
+        from . import views
+        urlpatterns = [
+            url(r'^$', views.product_list, name='product_list'),
+            url(r'^(?P<category_slug>[-\w]+)/$', views.product_list, name='product_list_by_category'),
+            url(r'^(?P<id>\d+)/(?P<slug>[-\w]+)/$', views.product_detail, name='product_detail'),
+        ]
 
-              <div class="social">
-                {% for sublist in available_backends|social_backends %}
-                  <div class="row">
-                    {% for name, backend in sublist %}
-                      {% associated backend %}
-                      {% if association %}
-                        <form class="disconnect-form col-md-2" id="{{ name }}-disconnect" action="{% url "social:disconnect_individual" backend=association.provider association_id=association.id %}" method="post">{% csrf_token %}
-                          <a class="btn btn-danger" name="{{ backend|backend_class }}" href="#">
-                            <i class="fa fa-{{ name|icon_name }}"></i>
-                            Disconnect {{ backend|backend_name }}
-                          </a>
-                        </form>
-                      {% else %}
-                        {% if name == "google-plus" %}
-                          <div class="col-md-2 btn btn-default" id="{{ name }}-button" name="{{ backend|backend_class }}">
-                            <i class="fa fa-{{ name|icon_name }}"></i>
-                            {{ backend|backend_name }}
-                          </div>
-                        {% else %}
-                          <a class="col-md-2 btn btn-default" id="{{ name }}-button" name="{{ backend|backend_class }}" href="{% url "social:begin" backend=name %}">
-                            <i class="fa fa-{{ name|icon_name }}"></i>
-                            {{ backend|backend_name }}
-                          </a>
-                        {% endif %}
-                      {% endif %}
-                    {% endfor %}
-                  </div>
-                {% endfor %}
-              </div>
 
-              <div class="legacy">
-                {% for name, backend in available_backends|legacy_backends %}
-                  {% associated backend %}
-                  {% if association %}
-                    <form class="disconnect-form" action="{% url "social:disconnect_individual" backend=association.provider association_id=association.id %}" method="post">{% csrf_token %}
-                      <a class="btn btn-danger" name="{{ backend|backend_class }}" href="#">
-                        <i class="fa fa-{{ name|icon_name }}"></i>
-                        Disconnect {{ backend|backend_name }}
-                      </a>
-                    </form>
-                  {% else %}
-                    <a class="btn btn-default" name="{{ backend|backend_class }}" href="{% url "social:begin" backend=name %}">
-                      <i class="fa fa-{{ name|icon_name }}"></i>
-                      {{ backend|backend_name }}
-                    </a>
-                  {% endif %}
-                {% endfor %}
+shop/product/detail.html
+------------------------
 
-                <a class="btn btn-info" name="ajax-login" href="#">
-                  <i class="fa fa-refresh"></i>
-                  Ajax
-                </a>
-              </div>
+        {% extends "shop/base.html" %}
+        {% load static %}
 
-              <div>
-                <a class="btn btn-primary" href="/logout/" id="logout">
-                  <i class="fa fa-sign-out"></i>
-                  Logout
-                </a>
-              </div>
+        {% block title %}
+            {{ product.name }}
+        {% endblock %}
+
+        {% block content %}
+            <div class="product-detail">
+                <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}">
+                <h1>{{ product.name }}</h1>
+                <h2><a href="{{ product.category.get_absolute_url }}">{{ product.category }}</a></h2>
+                <p class="price">${{ product.price }}</p>
+                
+                {{ product.description|linebreaks }}
             </div>
-
-            <div id="username-modal" class="modal fade">
-              <form action="{% url "social:complete" "username" %}" method="post" role="form">{% csrf_token %}
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                      <h4 class="modal-title">Email Authentication</h4>
-                    </div>
-
-                    <div class="modal-body">
-                      <div class="form-group">
-                        <label class="control-label" for="username">Username:</label>
-                        <input class="form-control" id="username" type="text" name="username" value="" />
-                      </div>
-
-                      <div class="form-group">
-                        <label class="control-label" for="password">Password:</label>
-                        <input class="form-control" id="password" type="password" name="password" value="" />
-                      </div>
-
-                      <div class="form-group">
-                        <label class="control-label" for="fullname">Full name:</label>
-                        <input class="form-control" id="fullname" type="text" name="fullname" value="" />
-                      </div>
-                    </div>
-
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-primary">Login</button>
-                    </div>
-                  </div>
-                </div>
-              </form>
-            </div>
-
-            <div id="email-modal" class="modal fade">
-              <form action="{% url "social:complete" "email" %}" method="post" role="form">{% csrf_token %}
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                      <h4 class="modal-title">Email Authentication</h4>
-                    </div>
-
-                    <div class="modal-body">
-                      <div class="form-group">
-                        <label class="control-label" for="email">Email address:</label>
-                        <input class="form-control" id="email" type="email" name="email" value="" />
-                      </div>
-
-                      <div class="form-group">
-                        <label class="control-label" for="password">Password:</label>
-                        <input class="form-control" id="password" type="password" name="password" value="" />
-                      </div>
-
-                      <div class="form-group">
-                        <label class="control-label" for="fullname">Full name:</label>
-                        <input class="form-control" id="fullname" type="text" name="fullname" value="" />
-                      </div>
-                    </div>
-
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-primary">Login</button>
-                    </div>
-                  </div>
-                </div>
-              </form>
-            </div>
-
-            <div id="livejournal-modal" class="modal fade">
-              <form action="{% url "social:begin" "livejournal" %}" method="post" role="form">{% csrf_token %}
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                      <h4 class="modal-title">LiveJournal OpenId Authentication</h4>
-                    </div>
-
-                    <div class="modal-body">
-                      <div class="form-group">
-                        <label class="control-label" for="openid_lj_identifier">LiveJournal ID:</label>
-                        <input class="form-control" id="openid_lj_identifier" type="text" value="" name="openid_lj_user" />
-                      </div>
-                    </div>
-
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-primary">Login</button>
-                    </div>
-                  </div>
-                </div>
-              </form>
-            </div>
-
-            <div id="openid-modal" class="modal fade">
-              <form action="{% url "social:begin" backend="openid" %}" method="post" role="form">{% csrf_token %}
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                      <h4 class="modal-title">Generic OpenId Authentication</h4>
-                    </div>
-
-                    <div class="modal-body">
-                      <div class="form-group">
-                        <label class="control-label" for="openid_identifier">OpenId Provider:</label>
-                        <input class="form-control" id="openid_identifier" type="text" value="" name="openid_identifier" />
-                      </div>
-                    </div>
-
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-primary">Login</button>
-                    </div>
-                  </div>
-                </div>
-              </form>
-            </div>
-
-            <div id="ajax-login-modal" class="modal fade">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Ajax Authentication by AccessToken</h4>
-                  </div>
-
-                  <div class="modal-body">
-                    <form action="#" method="post" class="form-horizontal" role="form">{% csrf_token %}
-                      <div class="form-group">
-                        <label class="control-label" for="backend">Backend:</label>
-                        <select class="form-control" name="backend">
-                          <option value=""></option>
-                          {% for name, backend in available_backends|oauth_backends %}
-                            <option value="{{ name }}">{{ backend|backend_name }}</option>
-                          {% endfor %}
-                        </select>
-                      </div>
-
-                      <div class="form-group">
-                        <label class="control-label" for="access_token">Access token:</label>
-                        <input class="form-control" id="access_token" name="access_token" type="text" value="" placeholder="OAuth1 or OAuth2 access token">
-                      </div>
-
-                      <div class="form-group">
-                        <label class="control-label" for="access_token_secret">Access token secret:</label>
-                        <input class="form-control" id="access_token_secret" name="access_token_secret" type="text" value="" placeholder="OAuth1 access token secret">
-                      </div>
-                    </form>
-
-                    <div class="login-result" style="display: none;">
-                      <p><strong>User Id:</strong><span class="user-id"></span></p>
-                      <p><strong>Username:</strong><span class="user-username"></span></p>
-                      <p>This page will be reloaded in 10s and the user should be logged in.</p>
-                    </div>
-                  </div>
-
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Login</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div id="persona-modal" class="modal fade">
-              <form action="{% url "social:complete" backend="persona" %}" method="post">{% csrf_token %}
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                      <h4 class="modal-title">Mozilla Persona Authentication</h4>
-                    </div>
-
-                    <div class="modal-body">
-                      <p>Login with Mozilla Persona by clicking the <code>Login</code> button below.</p>
-                      <input type="hidden" name="assertion" value="" />
-                    </div>
-
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-primary">Login</button>
-                    </div>
-                  </div>
-                </div>
-              </form>
-            </div>
-
-            {% if backend %}
-              <div id="email-required-modal" class="modal fade">
-                <form action="{% url "social:complete" backend=backend %}" method="post" role="form">{% csrf_token %}
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title">Email required</h4>
-                      </div>
-
-                      <div class="modal-body">
-                        <p>An email address is required.</p>
-                        <div class="form-group">
-                          <label class="control-label" for="email">Email address:</label>
-                          <input class="form-control" id="email" type="email" name="email" value="" />
-                        </div>
-                      </div>
-
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Continue</button>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            {% endif %}
-
-            <div id="validation-sent-modal" class="modal fade">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Email Validation Sent</h4>
-                  </div>
-
-                  <div class="modal-body">
-                    <p>An email validation was sent{% if email %} to <code>{{ email }}</code>{% endif %}.</p>
-                    <p>Click the link sent to finish the authentication process.</p>
-                  </div>
-
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {% if plus_id %}
-            <script src="https://apis.google.com/js/api:client.js"></script>
-            <script type="text/javascript">
-                gapi.load('auth2', function () {
-                  var auth2;
-
-                  auth2 = gapi.auth2.init({
-                    client_id: "{{ plus_id }}",
-                    scope: "{{ plus_scope }}"
-                  });
-
-                  auth2.then(function () {
-                    var button = document.getElementById("google-plus-button");
-                    console.log("User is signed-in in Google+ platform?", auth2.isSignedIn.get() ? "Yes" : "No");
-
-                    if (button) {
-                      auth2.attachClickHandler(button, {}, function (googleUser) {
-                        var authResponse = googleUser.getAuthResponse();
-                        var $form;
-                        var $input;
-
-                        $form = $("<form>");
-                        $form.attr("action", "{% url "social:complete" backend="google-plus" %}");
-                        $form.attr("method", "post");
-                        $input = $("<input>");
-                        $input.attr("name", "access_token");
-                        $input.attr("value", authResponse.access_token);
-                        $form.append($input);
-                        $form.append("{% csrf_token %}");
-                        $(document.body).append($form);
-                        $form.submit();
-                      });
-                    } else if (auth2.isSignedIn.get()) {
-                      $('#logout').on('click', function (event) {
-                        event.preventDefault();
-
-                        auth2.signOut().then(function () {
-                          console.log("Logged out from Google+ platform");
-                          document.location = $(event.target).attr('href');
-                        });
-                      });
-                    }
-                  });
-                });
-            </script>
-            {% endif %}
-
-            <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-            <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-            <script src="https://login.persona.org/include.js" type="text/javascript"></script>
-
-            <script type="text/javascript">
-              var modalDialog = function (modalId, modalLinkName, submitHandler) {
-                var $modal;
-
-                $modal = $(modalId).modal({show: false});
-
-                $modal.on('click', '.btn-primary', submitHandler || function (event) {
-                  event.preventDefault();
-                  $modal.find('form').submit();
-                });
-
-                if (modalLinkName) {
-                  $('a[name="' + modalLinkName + '"]').on('click', function (event) {
-                    event.preventDefault();
-                    $modal.modal('toggle');
-                  });
-                }
-
-                return $modal;
-              };
-
-              $(function () {
-                var $validationModal, $emailRequired;
-
-                modalDialog('#livejournal-modal', 'livejournal');
-                modalDialog('#openid-modal', 'openid');
-                modalDialog('#email-modal', 'email');
-                modalDialog('#username-modal', 'username');
-                $validationModal = modalDialog('#validation-sent-modal');
-                $emailRequired = modalDialog('#email-required-modal');
-
-                modalDialog('#ajax-login-modal', 'ajax-login', function (event) {
-                  var $backend, $accessToken, $accessTokenSecret, $fields, $result;
-                  event.preventDefault();
-
-                  $modal = $(this).closest('.modal');
-                  $form = $modal.find('form');
-                  $backend = $modal.find('[name="backend"]');
-                  $accessToken = $modal.find('[name="access_token"]');
-                  $accessTokenSecret = $modal.find('[name="access_token_secret"]');
-                  $result = $modal.find('.login-result');
-
-                  $.get('/ajax-auth/' + $backend.val() + '/', {
-                    access_token: $accessToken.val(),
-                    access_token_secret: $accessTokenSecret.val(),
-                  }, function (data, xhr, response) {
-                    $result.find('.user-id').html(data.id);
-                    $result.find('.user-username').html(data.username);
-                    $form.hide();
-                    $result.show();
-                    setTimeout(function () { window.location = '/'; }, 10000);
-                  }, 'json')
-                });
-
-                modalDialog('#persona-modal', 'persona', function (event) {
-                  var $form;
-                  event.preventDefault();
-
-                  $form = $(this).closest('form');
-                  navigator.id.get(function (assertion) {
-                    if (assertion) {
-                      $form.find('[name="assertion"]').val(assertion)
-                      $form.submit();
-                    } else {
-                      alert('An error occurred while getting your assertion, try again.');
-                    }
-                  });
-                });
-
-                $('.disconnect-form').on('click', 'a.btn', function (event) {
-                  event.preventDefault();
-                  $(event.target).closest('form').submit();
-                });
-
-                {% if validation_sent %}
-                  $validationModal.modal('show');
-                {% endif %}
-
-                {% if email_required %}
-                  $emailRequired.modal('show');
-                {% endif %}
-              });
-            </script>
-          </body>
-        </html>
+        {% endblock %}
 
 
-Далее надо читать API конкретной сети. 
---------------------------------------
-Вот библиотеки которые могут вам помочь:
+Django сессии
+=============
+Django полностью поддерживает сессии для анонимных пользователей, позволяет сохранять и получать данные для каждой посетителя сайта. Механизм сессии сохраняет данные на сервере и самостоятельно управляет сессионными куками. Куки содержат ID сессии,а не сами данные (если только вы не используете бэкенд на основе кук).
 
-Twitter - https://pypi.python.org/pypi/tweepy/ 
-Facebook - https://pypi.python.org/pypi/facebook-sdk
-Google+ - https://pypi.python.org/pypi/google-api-python-client
-Vk - https://pypi.python.org/pypi/vkontakte
-
-
-API Twitter
-===========
-https://pypi.python.org/pypi/python-twitter/
-
-twitter 1.17.1
-An API and command-line toolset for Twitter (twitter.com)
-
-
- pip install twitter
-
-django-classy-tags
+Активируем сессии
 ------------------
-http://django-classy-tags.readthedocs.io/en/latest/
+Сессии реализованы через промежуточный слой.
 
-django-classy-tags is an approach at making writing template tags in Django easier, shorter and more fun by providing an extensible argument parser which reduces most of the boiler plate code you usually have to write when coding custom template tags.
+Чтобы активировать сессии, выполните следующие действия:
+
+Убедитесь что MIDDLEWARE_CLASSES содержит 'django.contrib.sessions.middleware.SessionMiddleware'. settings.py по умолчанию, созданный django-admin startproject, уже содержит SessionMiddleware.
+
+Есди вы не собираетесь использовать сессии, вы можете удалить SessionMiddleware из MIDDLEWARE_CLASSES и 'django.contrib.sessions' из INSTALLED_APPS. Это немного повысит производительность.
+
+Настройка сессий
+----------------
+По умолчанию Django хранит сессии в базе данных (используя модель django.contrib.sessions.models.Session). В некоторых случаях лучше хранить данные сессии в других хранилищах, поэтому Django позволяет использовать файловую систему или кэш.
+
+Использование базы данных для хранения сессии
+---------------------------------------------
+Если вы хотите использовать базу данных для хранения сесиии, укажите 'django.contrib.sessions' в настройке INSTALLED_APPS.
+
+После настройки выполните manage.py migrate, чтобы добавить таблицу в базу данных.
+
+Использование кэша для хранения сессии
+---------------------------------------
+Для улучшения производительности вы можете использовать кэш для хранения сессии.
+
+Для этого вы должны настроить кэш.
+
+Вам следует использовать кэш только при использовании Memcached. Кэш в памяти не хранит данные достаточно долго, и лучше использовать файлы или базу данных для сессии, чем каждый раз обращаться к кэшу в файловой системе или базе данных. Также кэш в памяти использует различные экземпляры кэша для разных процессов.
+Если вы указали несколько кэшей в CACHES, Django будет использовать кэш по умолчанию. Чтобы использовать другой кэш, укажите его название в SESSION_CACHE_ALIAS.
+
+После настройки кэша у вас есть две опции, как хранить данные в кэше:
+
+Указать "django.contrib.sessions.backends.cache" в SESSION_ENGINE. Данные сессии будут храниться непосредственно в кэше. Однако, данные могут быть удалены при переполнении кэша или перезагрузке сервера кэша.
+
+Для постоянно хранения закэшированных данных укажите "django.contrib.sessions.backends.cached_db" в SESSION_ENGINE. Все записи в кэш будут продублированы в базу данных. База данных будет использоваться, если данные не найдены в кэше.
+
+Оба варианта работают достаточно быстро, но первый немного быстрее. Для большинства случаев cached_db будет достаточно быстрым, но если производительность для вас важнее, чем надежное хранение сессии, используйте бэкенд cache.
+
+Если вы используете cached_db, вам необходимо настроить и бэкенд базы данных.
+
+Использование файловой системы для хранения сессии
+--------------------------------------------------
+Чтобы использовать файловую систему, укажите "django.contrib.sessions.backends.file" в SESSION_ENGINE.
+
+Вы также можете указать SESSION_FILE_PATH (по умолчанию tempfile.gettempdir(), обычно это /tmp), чтобы указать Django, где сохранять сессионные файлы. Убедитесь, что ваш сервер имеет права на чтение и запись указанного каталога.
+
+Хранение сессии в куках
+-----------------------
+Чтобы хранить сессию в куках, укажите "django.contrib.sessions.backends.signed_cookies" в SESSION_ENGINE. Данные сессии будут сохранены в куках, используя криптографическую подпись и значение SECRET_KEY.
+
+Рекомендуем указать True в SESSION_COOKIE_HTTPONLY, чтобы запретить доступ JavaScript к кукам.
+
+Если SECRET_KEY не хранить в безопасности при использовании PickleSerializer, можно пострадать от атаки удаленного выполнения кода.
+
+Злоумышленник, узнав SECRET_KEY, может не только подделать данные сессии, но и выполнить удаленный код т.к. данные сессии используют pickle.
+
+Если вы храните сессию в куках, храните ваш секретный ключ максимально надежно для всех систем, которые используются пользователем.
+
+Сессионные данные подписаны, но не закодированы
+-----------------------------------------------
+Клиент может прочитать данные сессии, если вы храните их в куках.
+
+MAC (Message Authentication Code) используется для защиты данных от подделки пользователем. Данные будут недействительными, если пользователь попытается их поменять. Аналогичное происходит, если клиент, который хранит коки (например, браузер пользователя), не может сохранить сессионную куку и удаляет её. Несмотря на то , что Django сжимает данные, вполне возможно превысить принятый лимит 4096 байтов на куку.
+
+Актуальность не гарантируется
+-----------------------------
+Обратите внимание, хотя MAC может гарантировать авторизацию данных (что они были созданы вашим сайтом, а не кем-то другим), и целостность данных (данные не менялись и правильны), он не может гарантировать актуальность, то есть, что полученные данные последние, которые вы отсылали клиенту. Это означает, что при определенном использовании кук для сессии, ваш сайт может быть подвержен replay атакам. В отличии от других бэкендов сессии, которые хранят данные на сервере и очищают их при выходе пользователя(log out), сессия в куках не очищается, когда пользователь выходит. По этому, если атакующий украдет куки пользователя, он может использовать их для входа даже после того, как пользователь вышел с сайта. Куки будут определены как устаревшие, если только они старее чем SESSION_COOKIE_AGE.
+
+Производительность
+------------------
+Наконец, размер кук может повлиять на производительность вашего сайта.
+Использование сессии в представлениях
+-------------------------------------
+Когда SessionMiddleware активный, каждый объект HttpRequest – первый аргумент представления в Django – будет содержать атрибут session, который является объектом с интерфейсом словаря.
+
+Вы можете читать и менять request.session в любом месте вашего представления множество раз.
+
+            def __init__(self, request):
+                """
+                Initialize the cart.
+                """
+                self.session = request.session
+                cart = self.session.get(settings.CART_SESSION_ID)
+                if not cart:
+                    # save an empty cart in the session
+                    cart = self.session[settings.CART_SESSION_ID] = {}
+                self.cart = cart
+
+class backends.base.SessionBase
+-------------------------------
+Это базовый класс для всех объектов сессии. Он предоставляет набор стандартных методов словаря:
+
+__getitem__(key)
+Например: fav_color = request.session['fav_color']
+
+__setitem__(key, value)
+Например: request.session['fav_color'] = 'blue'
+
+__delitem__(key)
+Например: del request.session['fav_color']. Вызовет KeyError, если key еще не в сессии.
+
+__contains__(key)
+Например: 'fav_color' in request.session
+
+get(key, default=None)
+Например: fav_color = request.session.get('fav_color', 'red')
+
+pop(key)
+Например: fav_color = request.session.pop('fav_color')
+
+keys()
+items()
+setdefault()
+clear()
+
+            def clear(self):
+                # empty cart
+                self.session[settings.CART_SESSION_ID] = {}
+                self.session.modified = True
+
+Также содержит следующие методы:
+--------------------------------
+flush()
+Удаляет данные текущей сессии и сессионную куку. Можно использовать, если необходимо убедиться, что старые данные не доступны с браузера пользователя (например, функция django.contrib.auth.logout() вызывает этот метод).
+
+set_test_cookie()
+Устанавливает тестовую куку, чтобы проверить, что браузер пользователя поддерживает куки. Из-за особенностей работы кук вы не сможете проверить тестовую куку, пока пользователь не запросит следующую страницу.
+
+test_cookie_worked()
+Возвращает True или False, в зависимости от того, принял ли бразуер пользователя тестовую куку. Из-за особенностей работы кук вам необходимо вызывать в предыдущем запросе set_test_cookie().
+
+delete_test_cookie()
+Удаляет тестовую куку. Используйте, чтобы убрать за собой.
+
+set_expiry(value)
+Указывает время жизни сессии. Вы можете передать различные значения:
+
+Если value целое число, сессия истечет после указанного количества секунд не активности пользователя. Например, request.session.set_expiry(300) установит время жизни равное 5 минутам.
+
+Если value это datetime или timedelta, сессия истечет в указанное время. Обратите внимание, datetime и timedelta сериализуются только при использовании PickleSerializer.
+
+Если value равно 0, сессионная кука удалится при закрытии браузера.
+
+Если value равно None, сессия будет использовать глобальное поведение.
+
+Чтение сессии не обновляет время жизни сессии. Время жизни просчитывается с момента последнего изменения.
+
+            def save(self):
+                # update the session cart
+                self.session[settings.CART_SESSION_ID] = self.cart
+                # mark the session as "modified" to make sure it is saved
+                self.session.modified = True
+
+метод __init__
+==============
+Вызов класса происходит, когда создается объект.
+------------------------------------------------
+Метод __init__ вызывается сразу после создания экземпляра класса. Соблазнительно, но не правильно называть этот метод конструктором, потому что он выглядит как конструктор (принято, чтобы __init__ был первым методом, определенным в классе), ведет себя как коструктор (это перый кусок кода, вызываемый в созданном экземпляре класса) и даже называется как коструктор. Неправильно, так как к тому времени, когда вызывается метод __init__, объект уже создан и вы имеете ссылку на созданный экземпляр класса. Но метод __init__ — это самое близкое к конструктору, из того что есть в языке Python.
+
+Первым аргументом каждого метода класса, включая __init__, всегда является текущий экземпляр класса. Общепринято всегда называть этот аргумент self. В методе __init__ self ссылается на только что созданный объект, в других методах — на экземпляр класса, для которого метод вызывается. Хотя и необходимо явно указывать self при определении метода, вы его не указываете, когда вызываете метод; Python добавит его автоматически.
+
+Метод __init__ может иметь несколько аргументов. Аргументы могут иметь значения по умолчанию, что сделает их необязательными. В данном случае аргумент filename имеет значение по умолчанию None.
+
+Первый аргумент метода класса (ссылка на текущий экземпляр) принято называть self. Этот аргумент играет роль зарезервированного слова this в C++ и Java, но self не является зарезервированным словом — просто соглашение. Несмотря на это, не стоит называть его иначе, чем self.
+
+Итераторы
+=========
+Когда вы создаёте список, вы можете считывать его элементы один за другим — это называется итерацией:
+
+            >>> mylist = [1, 2, 3]
+            >>> for i in mylist :
+            ...    print(i)
 
 
-    pip install django-classy-tags
+Mylist является итерируемым объектом. Когда вы создаёте список, используя генераторное выражение, вы создаёте также итератор:
 
-django-appconf
+            >>> mylist = [x*x for x in range(3)]
+            >>> for i in mylist :
+            ...    print(i)
+
+Всё, к чему можно применить конструкцию «for… in...», является итерируемым объектом: списки, строки, файлы… Это удобно, потому что можно считывать из них значения сколько потребуется — однако все значения хранятся в памяти, а это не всегда желательно, если у вас много значений.
+
+Генераторы
+==========
+Генераторы это тоже итерируемые объекты, но прочитать их можно лишь один раз. Это связано с тем, что они не хранят значения в памяти, а генерируют их на лету:
+            
+            >>> mygenerator = (x*x for x in range(3))
+            >>> for i in mygenerator :
+            ...    print(i)
+
+Всё то же самое, разве что используются круглые скобки вместо квадратных. НО: нельзя применить конструкцию for i in mygenerator второй раз, так как генератор может быть использован только единожды: он вычисляет 0, потом забывает про него и вычисляет 1, завершаяя вычислением 4 — одно за другим.
+
+Yield
+=====
+Yield это ключевое слово, которое используется примерно как return — отличие в том, что функция вернёт генератор.
+            
+            >>> def createGenerator() :
+            ...    mylist = range(3)
+            ...    for i in mylist :
+            ...        yield i*i
+            ...
+            >>> mygenerator = createGenerator() # создаём генератор
+            >>> print(mygenerator) # mygenerator является объектом!
+            <generator object createGenerator at 0xb7555c34>
+            >>> for i in mygenerator:
+            ...     print(i)
+
+когда вы вызываете функцию, код внутри тела функции не исполняется. Функция только возвращает объект-генератор
+
+Ваш код будет вызываться каждый раз, когда for обращается к генератору.
+
+В первый запуск функции, она будет исполняться от начала до того момента, когда она наткнётся на yield — тогда она вернёт первое значение из цикла. На каждый следующий вызов будет происходить ещё одна итерация написанного цикла, возвращаться будет следующее значение — и так пока значения не кончатся.
+
+Генератор считается пустым, как только при исполнении кода функции не встречается yield. Это может случиться из-за конца цикла, или же если не выполняется какое-то из условий «if/else».
+
+
+shop/cart.py
 --------------
-http://django-appconf.readthedocs.io/en/latest/
-A helper class for handling configuration defaults of packaged Django apps gracefully.
 
-Это приложение предопределяет собственные классы AppConfig Django, которые действуют как "объекты хранения метаданных для приложения" во время работы механизма загрузки приложения в Django.
+        from decimal import Decimal
+        from django.conf import settings
+        from .models import Product
 
-   pip install django-appconf
+        class Cart(object):
+
+            def __init__(self, request):
+                """
+                Initialize the cart.
+                """
+                self.session = request.session
+                cart = self.session.get(settings.CART_SESSION_ID)
+                if not cart:
+                    # save an empty cart in the session
+                    cart = self.session[settings.CART_SESSION_ID] = {}
+                self.cart = cart
+
+            def __len__(self):
+                """
+                Count all items in the cart.
+                """
+                return sum(item['quantity'] for item in self.cart.values())
+
+            def __iter__(self):
+                """
+                Iterate over the items in the cart and get the products from the database.
+                """
+                product_ids = self.cart.keys()
+                # get the product objects and add them to the cart
+                products = Product.objects.filter(id__in=product_ids)
+                for product in products:
+                    self.cart[str(product.id)]['product'] = product
+
+                for item in self.cart.values():
+                    item['price'] = Decimal(item['price'])
+                    item['total_price'] = item['price'] * item['quantity']
+                    yield item
+
+            def add(self, product, quantity=1, update_quantity=False):
+                """
+                Add a product to the cart or update its quantity.
+                """
+                product_id = str(product.id)
+                if product_id not in self.cart:
+                    self.cart[product_id] = {'quantity': 0,
+                                              'price': str(product.price)}
+                if update_quantity:
+                    self.cart[product_id]['quantity'] = quantity
+                else:
+                    self.cart[product_id]['quantity'] += quantity
+                self.save()
+
+            def remove(self, product):
+                """
+                Remove a product from the cart.
+                """
+                product_id = str(product.id)
+                if product_id in self.cart:
+                    del self.cart[product_id]
+                    self.save()
+
+            def save(self):
+                # update the session cart
+                self.session[settings.CART_SESSION_ID] = self.cart
+                # mark the session as "modified" to make sure it is saved
+                self.session.modified = True
+
+            def clear(self):
+                # empty cart
+                self.session[settings.CART_SESSION_ID] = {}
+                self.session.modified = True
+
+            def get_total_price(self):
+                return sum(Decimal(item['price']) * item['quantity'] for item in self.cart.values())
+
+shop/forms.py
+-------------
+
+            from django import forms
 
 
-models.py
----------
-from __future__ import unicode_literals
-from appconf import AppConf
-
-class TwitterConf(AppConf):
-    class Meta:
-        prefix = 'twitter'
-        required = ['OAUTH_TOKEN', 'OAUTH_SECRET', 'CONSUMER_KEY', 'CONSUMER_SECRET']
+            PRODUCT_QUANTITY_CHOICES = [(i, str(i)) for i in range(1, 21)]
 
 
-модуль __future__
+            class CartAddProductForm(forms.Form):
+                quantity = forms.TypedChoiceField(choices=PRODUCT_QUANTITY_CHOICES,
+                                                  coerce=int)
+                update = forms.BooleanField(required=False,
+                                            initial=False,
+                                            widget=forms.HiddenInput)
+
+shopt/urls.py
+-------------
+
+        """shop URL Configuration
+        """
+        from django.conf.urls import url
+        from . import views
+
+        urlpatterns = [
+            url(r'^$', views.index, name='index'),
+            url(r'^cart/$', views.cart_detail, name='cart_detail'),
+            url(r'^add/(?P<product_id>\d+)/$', views.cart_add, name='cart_add'),
+            url(r'^remove/(?P<product_id>\d+)/$', views.cart_remove, name='cart_remove'),
+            url(r'^(?P<category_slug>[-\w]+)/$', views.index, name='product_index_by_category'),
+            url(r'^(?P<id>\d+)/(?P<slug>[-\w]+)/$', views.product_detail, name='product_detail'),
+
+        ]
+
+shopt/views.py
+-------------
+
+        from django.shortcuts import render, get_object_or_404
+        from .models import Category, Product
+        from .forms import CartAddProductForm
+
+
+        def product_list(request, category_slug=None):
+            category = None
+            categories = Category.objects.all()
+            products = Product.objects.filter(available=True)
+            if category_slug:
+                category = get_object_or_404(Category, slug=category_slug)
+                products = products.filter(category=category)
+            return render(request, 'shop/product/INDEX.html', {'category': category,
+                                                              'categories': categories,
+                                                              'products': products})
+
+        def product_detail(request, id, slug):
+            product = get_object_or_404(Product, id=id, slug=slug, available=True)
+            cart_product_form = CartAddProductForm()
+            return render(request,
+                          'shop/product/detail.html',
+                          {'product': product,
+                           'cart_product_form': cart_product_form})
+
+Система шаблонов
+================
+
+Django использует высокоуровневый API, который не привязан к конкретному бэкенду:
+
+- Для каждого бэкенда DjangoTemplates из настройки the TEMPLATES, Django создает экземпляр Engine. DjangoTemplates оборачивает Engine, чтобы адаптировать его под API конкретного бэкенда шаблонов.
+- Модуль django.template.loader предоставляет функции, такие как get_template(), для загрузки шаблонов. Они возвращают django.template.backends.django.Template, который оборачивает django.template.Template.
+- Template, полученный на предыдущем шаге, содержит метод render(), который оборачивает контекст и запрос в Context и делегирует рендеринг основному объекту Template.
+
+Настройка бэкенда
 ------------------
 
-Хорошей практикой является применение deprecated нотаций (помечать, что какой-то метод/функционал будет удален в такой-то версии) Можно пойти дальше и указывать какой функционал станет обязательным в следующих версиях.
+При создании Engine все аргументы должны передаваться как именованные:
 
-Если с deprecated еще все более-менее ясно, то как заставить компилятор понимать функционал из будущих версий?
+- dirs – это список каталого, в которых бэкенд ищет файлы шаблонов. Используется для настройки filesystem.Loader. По умолчанию равен пустому списку.
+- app_dirs влияет только на значение loaders по умолчанию. По умолчанию False.
+- context_processors – список путей Python для импорта функций, которые используются для наполнения контекста шаблонов, если он рендерится с объектом запроса. Эти функции принимают объект запроса и возвращают dict значений, которые будут добавлены в контекст. По умолчанию равен пустому списку.
+- debug – булево значение, которое включает и выключает режим отладки. При True шаблонизатор сохраняет дополнительную отладочную информацию, которая может использоваться для отображения информации ошибки, которая возникла во время рендеринга. По умолчанию False.
+- loaders – список загрузчиков шаблонов, указанных строками. Каждый класс Loader знает как загрузить шаблоны из определенного источника. Вместо строки можно указать кортеж. Первым элементом должен быть путь к классу Loader, вторым – параметры, которые будут переданы в Loader при инициализации.
+По умолчанию содержит список:
+```
+'django.template.loaders.filesystem.Loader'
+'django.template.loaders.app_directories.Loader', только если app_dirs равен True.
+```
+- string_if_invalid значение, которые шаблонизатор выведет вместо неправильной переменной(например, с опечаткой в назчании). По умолчанию – пустая строка.
+- file_charset – кодировка, которая используется при чтении файла шаблона с диска. По умолчанию 'utf-8'.
 
-Для этого в Python есть модуль __future__. Этот небольшой по размеру модуль -> https://hg.python.org/cpython/file/3.5/Lib/future.py
 
-И работает он следующим образом: когда компилятор проходится по файлам с исходным кодом, анализатор выявляет импорты из __future__. Если такой есть, то флаги компиляции дополняются этими импортами, это и позволяет собрать нужный байт-код.
+shop/views.py
+-------------
 
-Отсюда и следует понятное требование к импортам из __future__ - они должны быть самыми первыми.
+        from django.shortcuts import render, redirect, get_object_or_404
+        from django.views.decorators.http import require_POST
+        from .models import Product
+        from .cart import Cart
+        from .forms import CartAddProductForm
 
-Рассмотрим пример, в 3.5 в модуле __future__ появился флаг generator_stop, который реализует логику PEP 0479. Этот PEP позволяет отлавливать исключение StopIteration внутри генератора. Этот функционал станет доступен только в 3.7, но уже в 3.5 можно его использовать.
 
-from __future__ import generator_stop
-# super code
-когда компилятор заметит первый импорт, то скомпилирует файл с учетом нового функционала.
+        @require_POST
+        def cart_add(request, product_id):
+            cart = Cart(request)
+            product = get_object_or_404(Product, id=product_id)
+            form = CartAddProductForm(request.POST)
+            if form.is_valid():
+                cd = form.cleaned_data
+                cart.add(product=product,
+                         quantity=cd['quantity'],
+                         update_quantity=cd['update'])
+            return redirect('shop:cart_detail')
 
-По ссылке https://docs.python.org/3.5/library/future.html вы найдете список флагов в модуле __future__. 
 
+        def cart_remove(request, product_id):
+            cart = Cart(request)
+            product = get_object_or_404(Product, id=product_id)
+            cart.remove(product)
+            return redirect('shop:cart_detail')
+
+
+        def cart_detail(request):
+            cart = Cart(request)
+            for item in cart:
+                item['update_quantity_form'] = CartAddProductForm(initial={'quantity': item['quantity'],
+                                                                           'update': True})
+            return render(request, 'shop/product/cart.html', {'cart': cart})
+
+Процессоры контекста
+====================
+список процессоров контекста по умолчанию:
+------------------------------------------
+1. django.contrib.auth.context_processors.auth
+Если включить этот процессор, в RequestContext будут добавлены следующие переменные:
+- user – объект auth.User текущего авторизованного пользователя или объект AnonymousUser, если пользователь не авторизованный).
+- perms – объект django.contrib.auth.context_processors.PermWrapper, которые содержит права доступа текущего пользователя.
+
+2. django.template.context_processors.debug
+Если включить этот процессор, в RequestContext будут добавлены следующие переменные, но только при DEBUG равном True и, если IP адрес запроса (request.META['REMOTE_ADDR']) указан в INTERNAL_IPS:
+- debug – True. Вы можете использовать эту переменную, чтобы определить DEBUG режим в шаблоне.
+- sql_queries – список словарей {'sql': ..., 'time': ...}, который содержит все SQL запросы и время их выполнения, которые были выполнены при обработке запроса. Список отсортирован в порядке выполнения SQL запроса.
+
+3. django.template.context_processors.i18n
+Если включить этот процессор, в RequestContext будут добавлены следующие переменные:
+- LANGUAGES – значение настройки LANGUAGES.
+- LANGUAGE_CODE – request.LANGUAGE_CODE, если существует. Иначе значение LANGUAGE_CODE.
+
+4. django.template.context_processors.media
+Если включить этот процессор, в RequestContext будет добавлена переменная MEDIA_URL, которая содержит значение MEDIA_URL.
+
+5. django.template.context_processors.static
+Если включить этот процессор, в RequestContext будет добавлена переменная STATIC_URL, которая содержит значение STATIC_URL.
+
+6. django.template.context_processors.csrf
+Этот процессор добавляет токен, который используется тегом csrf_token для защиты от CSRF атак.
+
+7. django.template.context_processors.request
+Если включить этот процессор, в RequestContext будет добавлена переменная request, содержащая текущий HttpRequest.
+
+8. django.contrib.messages.context_processors.messages
+Если включить этот процессор, в RequestContext будут добавлены следующие переменные:
+- messages – список сообщений (строки), которые были добавлены с помощью фреймворка сообщений.
+- DEFAULT_MESSAGE_LEVELS – словарь приоритетов сообщений и их числовых кодов.
+
+Как создать свой процессор контекста
+------------------------------------
+Интерфейс процессора контекста - это функция Python, которая принимает один аргумент, объект HttpRequest, и возвращает словарь, которая будет добавлен в контекст шаблона. Процессор контекста обязательно должен возвращать словарь.
+
+Код процессора может находится где угодно. Главное не забыть указать его в опции 'context_processors' настройки:setting:TEMPLATES, или передать аргументом context_processors в Engine.
+
+
+shop/processors/context_processors.py
+-------------------------------------
+
+        from ..cart import Cart
+
+        def cart(request):
+            return {'cart': Cart(request) }
 
 
 settings.py
 -----------
-
-        # Your access token: Access token
-        TWITTER_OAUTH_TOKEN = 'bI1Vr3AtcZWa5THY8RPyZQYF8SXhkYDJnM21Hh7X9'
-        # Your access token: Access token secret
-        TWITTER_OAUTH_SECRET = '3S2enJFZGrjv4KRA7FK0TaSK2c9s7iMw8pbqje6eYF'
-        # OAuth settings: Consumer key
-        TWITTER_CONSUMER_KEY = 'gTVg6h1f0qyUj2Z7M5lKmW'
-        # OAuth settings: Consumer secret
-        TWITTER_CONSUMER_SECRET = 'EGNPWtsKwIzA4I5HIbpXhcdeFfe1DainSuApL'
-
-
-templatetags/twitter_tag.py
----------------------------
-
-        from __future__ import unicode_literals
-        from datetime import datetime
-        from six.moves import http_client
-        import logging
-
-        from django import template
-        from django.conf import settings
-        from django.core.cache import cache
-        from django.utils import timezone
-
-        from twitter import Twitter, OAuth, TwitterError
-        from classytags.core import Tag, Options
-        from classytags.arguments import Argument, MultiKeywordArgument
-
-urllib2
--------
-
-urllib2 это модуль Python для работы с URL-адресом. 
-Модуль имеет свои функции и классы, которые помогают в работе с URL - basic и digest аутентификации, перенаправлениях, cookie и многое другое.
-
-Чем urllib отличается от urllib2?
-
-В то время как оба модуля призваны делать примерно одно и то же - работать с URL, они имеют разную функциональность. 
-
-urllib2 в качестве аргумента может принимать Request object, чтобы добавлять заголовки к запросу и другое, в то время как urllib может принимать только стринговый URL. 
-
-urllib имеет метод urlencode, который используется для кодирования строки в вид, удовлетворяющий правилам данных в запросах, а urllib2 не имеет такой функции. Из-за этого urllib и urllib2 часто используются вместе.
-
-В официальной документации:
----------------------------
-urllib https://docs.python.org/2/library/urllib.html
-urllib2 https://docs.python.org/2/library/urllib2.html
-
-Метод urlopen
--------------
-urllib2 предлагает очень простой интерфейс, в виде urlopen функции. 
-Эта функция способна извлечь URL-адрес с помощью различных протоколов (HTTP, FTP, ...)
-Просто передайте URL адрес функции urlopen(), чтобы получить доступ к удаленным данным.
-
-Кроме того, urllib2 предлагает интерфейс обработки распространенных ситуаций -
-таких как basic-аутентификация, cookies, прокси-серверы и так далее. Но обо всем, по порядку.
-
-GET запрос к URL
-----------------
-
-Для начала, импортируем urllib2 модуль.
-Положим ответ сервера в переменную, например response. (response является file-like объектом.)
-Теперь читаем данные из response в строковую переменную html
-В дальнейшем, проводим какие-либо действие с переменной html.
-
-если существует пробел в адресе, необходимо проенкодить его, используя метод urlencode.
-
-Пример 1
---------
-import urllib2
-
-        response = urllib2.urlopen('http://python.org/')
-        print response.info()
-        html = response.read()
-        # делаем что-нибудь
-        response.close()
-
-        # также можно использовать URL начинающиеся с "ftp:", "file:", и т.д.
-
-Пример 2
---------
-        import urllib2
-
-        response = urllib2.urlopen('http://python.org/')
-        print "Ответ (file-like object):", response
-
-        # URL из запроса
-        print "The URL is: ", response.geturl()
-
-        # Ответ сервера
-        print "This gets the code: ", response.code
-
-        # Заголовки ответа в виде словаря
-        print "The Headers are: ", response.info()
-
-        # Достаем дату сервера из заголовков ответа
-        print "The Date is: ", response.info()['date']
-
-        # Получаем заголовок 'server' из заголовков 
-        print "The Server is: ", response.info()['server']
-
-        # Получаем весь html страницы
-        html = response.read()
-        print "Get all data: ", html
-
-        # Узнаем длину страницу
-        print "Get the length :", len(html)
-
-        for line in response:
-         print line.rstrip()
-
-
-Скачивание файла с помощью urllib2
------------------------------------
-        import urllib2
-
-        # файл для записи
-        file = "downloaded_file.html"
-
-        url = "http://www.pythonforbeginners.com/"
-        response = urllib2.urlopen(url)
-
-        # откроем файл на запись
-        fh = open(file, "w")
-
-        # читаем URL и записываем в локальный файл
-        fh.write(response.read())
-        fh.close()
-
-        # аналогичный вариант
-        with open(file, 'w') as f: f.write(response.read())
-
-пример с скачиванием бинарного файла:
--------------------------------------
-        import urllib2
-
-        mp3file = urllib2.urlopen("http://www.example.com/songs/mp3.mp3")
-
-        output = open('test.mp3','wb')
-        output.write(mp3file.read())
-        output.close()
-
-urllib2 Request
----------------
-Если нужно отправить что-то замысловатое, например добавить дополнительные заголовки к запросу, то нужно использовать urllib2.Request.
-
-Вы можете задать исходящие данные в Request, которые хотите отправить на сервере.
-Кроме того, вы можете передавать на сервер дополнительную информацию (метаданные) о данных, отправляемых на сервер или о самом запросе, эта информация передается в виде HTTP заголовков.
-
-Если вы хотите отправить POST запрос, нужно сначала создать словарь содержащий необходимые переменные и их значения.
-
-
-        # Данные, которые хотим отправить
-        query_args = { 'q':'query string', 'foo':'bar' }
-
-        # Производим urlencodes для ранее созданного словаря (вот для чего мы импортировали библиотеку urllib вверху)
-        data = urllib.urlencode(query_args)
-
-        # Отправляем HTTP POST запрос
-        request = urllib2.Request(url, data)
-
-        response = urllib2.urlopen(request)
-         
-        html = response.read()
-
-        # Выводим результат
-        print html
-
-
-User Agent
-----------
-Чтобы идентифицировать клиента, который отправляет запрос, будь то браузер или какая-либо программа, умные люди придумали заголовок User-Agent. Который хранит в себе название и версию клиента.
-По умолчанию urllib2 идентифицирует себя как Python-urllib/x.y
-где x и y - это номера версий Python-релиза.
-
-С urllib2 можно добавить собственные заголовки к запросу.
-Причина, по которой нужно изменять User Agent бывают разные, но в большинстве случаев это делается для того, чтобы как можно больше, походить на реального человека, а не скрипт.
-
-При создании Request объекта нужно добавить заголовки в словарь,
-для этого используйте опцию add_header().
-
-        import urllib2
-
-        # наш URL
-        url = 'http://www.google.com/#q=my_search'
-
-        # Добавляем заголовок. 
-        headers = {'User-Agent' : 'Mozilla 5.10'}
-        # создаем Request объект. 
-        request = urllib2.Request(url, None, headers)
-
-        # или так
-        # request.add_header('User-Agent' : 'Mozilla 5.10')
-
-        # Посылаем запрос и получаем ответ
-        response = urllib2.urlopen(request)
-
-        # Выводим заголовки
-        print response.headers
-
-urllib.urlparse
----------------
-urlparse модуль содержит функции для анализа URL строки.
-
-Он определяет стандартный интерфейс разделения Uniform Resource Locator (URL)
-строки в несколько дополнительных частей, называемых компонентами (scheme, location, path, query и fragment).
-
-        Скажем, у вас есть URL:
-        http://www.python.org:80/index.html
-         в нем, будут следующие компоненты:
-
-        schema: http
-        location: www.python.org:80
-        path: index.html
-        query и fragment будут пустыми.
-
-        import urlparse
-
-        url = "http://python.org"
-        domain = urlparse.urlsplit(url)[1].split(':')[0]
-
-        print "The domain name of the url is: ", domain
-
-
-urllib.urlencode
-----------------
-Когда вы передаете информацию через URL, вы должны убедиться, что в ней используется только определенные, разрешенные символы. 
-
-Разрешенные символы - это любые алфавитные символы, цифры и некоторые специальные
-символы, которые имеют значение в строке URL-адреса.
-
-Наиболее часто кодируются символ "пробел". Вы видите этот символ каждый раз, когда вы видите знак "плюс " (+) в URL. Это означает пробел. 
-Знак "плюс" выступает как специальный символ, представляющий пробелы в URL
-
-Аргументы могут быть переданы на сервер при их кодировании и последующему добавлению к URL-адресу.
-
-
-        import urllib
-
-        query_args = { "q":"query string", "sql":"' or 1='1" }
-        encoded_args = urllib.urlencode(query_args)
-
-        print 'Encoded:', encoded_args
-
-
-В результате получим следующее:
-        Encoded: q=query+string&sql=%27+or+1%3D%271
-пробел преобразовался в символ +, одинарная кавычка в %27.
-
-Python urlencode принимает пару переменная/значение и создает уже кодированную строку.
-
-        from urllib import urlencode
-
-        artist = "Kruder & Dorfmeister"
-        artist = urlencode({'ArtistSearch':artist})
-
-        Результатом будет:
-        ArtistSearch=Kruder+%26+Dorfmeister
-
-Обработка ошибок
----------------- 
-
-urlopen поднимает URLError, когда он не может обработать ответ сервера. HTTPError является подклассом URLError, и поднимается в конкретном случае - при обработке ошибки, связанной с HTTP.
-
-URLError
---------
-Часто, URLError вызывается, потому что нет сетевого соединения или указанный сервер не существует.
-В этом случае нам нужен атрибут 'reason', который содержит код и текст сообщения об ошибке. 
-
-        import  urllib2
-
-        request = urllib2.Request('http://www.pretend_server.org')
-        try: 
-            urllib2.urlopen(request)
-        except urllib2.URLError, e:
-            print e.reason
-
-
-HTTPError
----------
-Каждый HTTP-ответ от сервера содержит код состояния. Иногда этот код указывает, что сервер не в состоянии обработать запрос.
-
-Обработчик по умолчанию будет обрабатывать некоторые из этих кодов для вас (например,
-если ответ "перенаправление", urllib2 обработает это). 
-При тех случаях, которые библиотека не может обработать ошибку, urlopen вызывает HTTPError.
-
-        from urllib2 import Request, urlopen, URLError
-
-        req = Request('http://python.org/error.html')
-
-        try:
-            response = urlopen(req)
-
-        except URLError, e:
-
-            if hasattr(e, 'reason'):
-                print 'We failed to reach a server.'
-                print 'Reason: ', e.reason
-
-            elif hasattr(e, 'code'):
-                print 'The server couldn\'t fulfill the request.'
-                print 'Error code: ', e.code
-        else:
-            print 'no error'
-
-
-
-
-        from ..utils import *
-
-        try:
-            from urllib2 import URLError
-        except ImportError:
-            from urllib.error import URLError
-
-urllib.parse.quote
-------------------
-        urllib.parse.quote(<строка>[, safe='/'][, encoding=None][, errors=None])
-заменяет все специальные симолы последовательностями %nn. Цифры, анг­лийские буквы и символы подчеркивания, точки и дефиса не кодируются. Пробелы преобразуются в последовательность %20.
-
-Параметры:  safe (str) – символы, которые преобразовывать нельзя
-        >>> quote("Cтpoкa", encoding="cp1251")
-        '%D1%F2%F0%EE%EA%E0'
-        >>> quote("Cтpoкa", encoding="utf-8")
-        '%D0%A1%D1%82%D1%80%D0%BE%D0%BA%D0%B0'
-
-utils.py
---------
-        from __future__ import unicode_literals
-        import re
-        try:
-            from urllib import quote
-        except ImportError:
-            from urllib.parse import quote
-
-
-        def get_user_cache_key(**kwargs):
-            """ Generate suitable key to cache twitter tag context
-            """
-            key = 'get_tweets_%s' % ('_'.join([str(kwargs[key]) for key in sorted(kwargs) if kwargs[key]]))
-            not_allowed = re.compile('[^%s]' % ''.join([chr(i) for i in range(33, 128)]))
-            key = not_allowed.sub('', key)
-            return key
-
-
-        def get_search_cache_key(prefix, *args):
-            """ Generate suitable key to cache twitter tag context
-            """
-            key = '%s_%s' % (prefix, '_'.join([str(arg) for arg in args if arg]))
-            not_allowed = re.compile('[^%s]' % ''.join([chr(i) for i in range(33, 128)]))
-            key = not_allowed.sub('', key)
-            return key
-
-
-        TWITTER_HASHTAG_URL = '<a href="https://twitter.com/search?q=%%23%s">#%s</a>'
-        TWITTER_USERNAME_URL = '<a href="https://twitter.com/%s">@%s</a>'
-
-
-urlize
--------
-Конвертирует URL-ы в тексте в “кликабельные” ссылки.
-
-Этот тег конвертирует ссылки с префиксами http://, https://, или www.. Например, http://goo.gl/aia1t будет конвертирован, goo.gl/aia1t – нет.
-
-Так же поддерживаются ссылки состоящие только из домена и заканчивающиеся на один из первоначальных доменов первого уровня (.com, .edu, .gov, .int, .mil, .net, and .org). Например, djangoproject.com будет преобразован.
-
-Ссылки могут быть с завершающей пунктуацией (точка, запятая, закрывающая скобка) и предшествующей пунктуацией (открывающая скобка), urlize все корректно преобразует.
-
-Ссылки созданные urlize содержат атрибут rel="nofollow".
-
-Например:
-
-    {{ value|urlize }}
-Если value равно "Check out www.djangoproject.com", будет выведено 
-
-    "Check out <a href="http://www.djangoproject.com" rel="nofollow">www.djangoproject.com</a>".
-
-Фильтр urlize принимает не обязательный аргумент autoescape. Если autoescape равен True, текст ссылки и URL будут экранированы с помощью фильтра escape. Значение по-умолчанию для autoescape равно True.
-
-Если применить urlize к тексту, который содержит HTML, результат будет неверным. Применяйте фильтр только к обычному тексту.
-
-
-        def urlize_tweet(tweet):
-            """ Turn #hashtag and @username in a text to Twitter hyperlinks,
-                similar to the ``urlize()`` function in Django.
-            """
-            text = tweet.get('html', tweet['text'])
-            for hash in tweet['entities']['hashtags']:
-                text = text.replace('#%s' % hash['text'], TWITTER_HASHTAG_URL % (quote(hash['text'].encode("utf-8")), hash['text']))
-            for mention in tweet['entities']['user_mentions']:
-                text = text.replace('@%s' % mention['screen_name'], TWITTER_USERNAME_URL % (quote(mention['screen_name']), mention['screen_name']))
-            tweet['html'] = text
-            return tweet
-
-
-        def expand_tweet_urls(tweet):
-            """ Replace shortened URLs with long URLs in the twitter status, and add the "RT" flag.
-                Should be used before urlize_tweet
-            """
-            if 'retweeted_status' in tweet:
-                text = 'RT @{user}: {text}'.format(user=tweet['retweeted_status']['user']['screen_name'],
-                                                   text=tweet['retweeted_status']['text'])
-                urls = tweet['retweeted_status']['entities']['urls']
-            else:
-                text = tweet['text']
-                urls = tweet['entities']['urls']
-
-            for url in urls:
-                text = text.replace(url['url'], '<a href="%s">%s</a>' % (url['expanded_url'], url['display_url']))
-            tweet['html'] = text
-            return tweet
-
-
-
-
-    register = template.Library()
-
-
-        class BaseTwitterTag(Tag):
-            """ Abstract twitter tag"""
-
-            def get_cache_key(self, args_disct):
-                raise NotImplementedError
-
-            def get_json(self, twitter):
-                raise NotImplementedError
-
-            def get_api_call_params(self, **kwargs):
-                raise NotImplementedError
-
-            def enrich(self, tweet):
-                """ Apply the local presentation logic to the fetched data."""
-                tweet = urlize_tweet(expand_tweet_urls(tweet))
-                # parses created_at "Wed Apr 27 16:08:45 +0000 2008"
-
-                if settings.USE_TZ:
-                    tweet['datetime'] = datetime.strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y').replace(tzinfo=timezone.utc)
-                else:
-                    tweet['datetime'] = datetime.strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y')
-
-                return tweet
-
-            def render_tag(self, context, **kwargs):
-                cache_key = self.get_cache_key(kwargs)
-
-                try:
-                    twitter = Twitter(auth=OAuth(settings.TWITTER_OAUTH_TOKEN,
-                                                 settings.TWITTER_OAUTH_SECRET,
-                                                 settings.TWITTER_CONSUMER_KEY,
-                                                 settings.TWITTER_CONSUMER_SECRET))
-                    json = self.get_json(twitter, **self.get_api_call_params(**kwargs))
-                except (TwitterError, URLError, ValueError, http_client.HTTPException) as e:
-                    logging.getLogger(__name__).error(str(e))
-                    context[kwargs['asvar']] = cache.get(cache_key, [])
-                    return ''
-
-                json = [self.enrich(tweet) for tweet in json]
-
-                if kwargs['limit']:
-                    json = json[:kwargs['limit']]
-                context[kwargs['asvar']] = json
-                cache.set(cache_key, json)
-
-                return ''
-
-
-
-        class UserTag(BaseTwitterTag):
-            """ A django template tag to display user's recent tweets.
-
-                :type context: list
-                :type username: string
-                :type asvar: string
-                :type exclude: string
-                :type limit: string
-
-                NB: count argument of twitter API is not useful, so we slice it ourselves
-                    "We include retweets in the count, even if include_rts is not supplied.
-                     It is recommended you always send include_rts=1 when using this API method."
-
-                Examples:
-                {% get_tweets for "janusnic" as tweets exclude "replies" limit 10 %}
-                {% get_tweets for "janusnic" as tweets exclude "retweets" %}
-                {% get_tweets for "janusnic" as tweets exclude "retweets,replies" limit 1 %}
-            """
-            name = 'get_tweets'
-            options = Options(
-                'for', Argument('username'),
-                'as', Argument('asvar', resolve=False),
-                'exclude', Argument('exclude', required=False),
-                'limit', Argument('limit', required=False),
-            )
-
-            def get_cache_key(self, kwargs_dict):
-                return get_user_cache_key(**kwargs_dict)
-
-            def get_api_call_params(self, **kwargs):
-                params = {'screen_name': kwargs['username']}
-                if kwargs['exclude']:
-                    if 'replies' in kwargs['exclude']:
-                        params['exclude_replies'] = True
-                    if 'retweets' in kwargs['exclude'] or 'rts' in kwargs['exclude']:
-                        params['include_rts'] = False
-                return params
-
-            def get_json(self, twitter, **kwargs):
-                return twitter.statuses.user_timeline(**kwargs)
-
-
-        class SearchTag(BaseTwitterTag):
-            name = 'search_tweets'
-            options = Options(
-                'for', Argument('q'),
-                'as', Argument('asvar', resolve=False),
-                MultiKeywordArgument('options', required=False),
-                'limit', Argument('limit', required=False),
-            )
-
-            def get_cache_key(self, kwargs_dict):
-                return get_search_cache_key(kwargs_dict)
-
-            def get_api_call_params(self, **kwargs):
-                params = {'q': kwargs['q'].encode('utf-8')}
-                params.update(kwargs['options'])
-                return params
-
-            def get_json(self, twitter, **kwargs):
-                return twitter.search.tweets(**kwargs)['statuses']
-
-
-        register.tag(UserTag)
-        register.tag(SearchTag)
-
-index.html
-----------
-        {% load twitter_tag %}
-
-
-        <div class="col-md-4">
-          <h2>Latest Tweets from @janusnic</h2>
-              {% get_tweets for "janusnic" as tweets %}
-
-              <ul>
-              {% for tweet in tweets %}
-                  <li>{{ tweet.html|safe }}</li>
-              {% endfor %}
-              </ul>
-          
+        TEMPLATES = [
+            {
+                'BACKEND': 'django.template.backends.django.DjangoTemplates',
+                'DIRS': [os.path.join(BASE_DIR, "templates")],
+                'APP_DIRS': True,
+                'OPTIONS': {
+                    'context_processors': [
+                        'django.template.context_processors.debug',
+                        'django.template.context_processors.request',
+                        'django.contrib.auth.context_processors.auth',
+                        'django.contrib.messages.context_processors.messages',
+                        'shop.processors.context_processors.cart',
+                    ],
+                },
+            },
+        ]
+
+
+shop/product/cart.html
+------------------------
+
+        {% extends "base.html" %}
+        {% load static %}
+
+        {% block title %}Your shopping cart{% endblock %}
+
+        {% block content %}
+            <div class="container">
+              <!-- row of columns -->
+              <div class="row">
+                <div class="col-md-4 sidebar">
+                    <h3>Categories</h3>
+                    <ul>
+                        <li {% if not category %}class="selected"{% endif %}>
+                            <a href="{% url "shop:index" %}">All</a>
+                        </li>
+                    {% for c in categories %}
+                        <li {% if category.slug == c.slug %}class="selected"{% endif %}>
+                            <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+
+            <div id="main" class="col-md-8 product-list">
+            
+            <h1>Your shopping cart</h1>
+            <table class="cart">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Remove</th>
+                        <th>Unit price</th>                
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for item in cart %}
+                    {% with product=item.product %}
+                    <tr>
+                        <td>
+                            <a href="{{ product.get_absolute_url }}">
+                                <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}">
+                            </a>
+                        </td>
+                        <td>{{ product.name }}</td>
+                        <td>
+                            <form action="{% url "shop:cart_add" product.id %}" method="post">
+                                {{ item.update_quantity_form.quantity }}
+                                {{ item.update_quantity_form.update }}
+                                <input type="submit" value="Update">
+                                {% csrf_token %}
+                            </form>
+                        </td>
+                        <td><a href="{% url "shop:cart_remove" product.id %}">Remove</a></td>
+                        <td class="num">${{ item.price }}</td>
+                        <td class="num">${{ item.total_price }}</td>
+                    </tr>
+                    {% endwith %}
+                {% endfor %}
+                <tr class="total">
+                    <td>Total</td>
+                    <td colspan="4"></td>
+                    <td class="num">${{ cart.get_total_price }}</td>
+                </tr>
+                </tbody>
+            </table>
+            <p class="text-right">
+                <a href="{% url "shop:index" %}" class="button light">Continue shopping</a>
+                <a href="#" class="button">Checkout</a>
+            </p>
+
+         </div>
         </div>
-      </div>
+        <hr>
 
-Tweet Button
-------------
-https://about.twitter.com/resources/buttons#tweet
-
-    <a href="https://twitter.com/share" class="twitter-share-button" data-via="janusnic">Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+        {% endblock %}
 
 
-Create an Embedded Timeline 
+redirect
+========
+redirect(to, [permanent=False, ]*args, **kwargs)
+Возвращает перенаправление(HttpResponseRedirect) на URL указанный через аргументы.
+
+В аргументах можно передать:
+
+- Экземпляр модели: как URL будет использоваться результат вызова метода get_absolute_url().
+
+- Название представления, возможно с аргументами: для вычисления URL-а будет использоваться функция urlresolvers.reverse.
+
+- Абсолютный или относительный URL, который будет использован для перенаправления на указанный адрес.
+
+По умолчанию использует временное перенаправление, используйте аргумент permanent=True для постоянного перенаправления.
+
+Функцию redirect() можно использовать несколькими способами.
+------------------------------------------------------------
+Передавая объект; в качестве URL-а для перенаправления будет использоваться результат вызова метода get_absolute_url():
+
+        from django.shortcuts import redirect
+
+        def my_view(request):
+            ...
+            object = MyModel.objects.get(...)
+            return redirect(object)
+Передавая название представления и необходимые позиционные или именованные аргументы; URL будет вычислен с помощью функции reverse():
+
+        def my_view(request):
+            ...
+            return redirect('some-view-name', foo='bar')
+
+Передавая непосредственно URL:
+
+        def my_view(request):
+            ...
+            return redirect('/some/url/')
+Работает также с полным URL-ом:
+
+        def my_view(request):
+            ...
+            return redirect('http://example.com/')
+По умолчанию, redirect() возвращает временное перенаправление. Все варианты выше принимают аргумент permanent; если передать True будет использоваться постоянное перенаправление:
+
+        def my_view(request):
+            ...
+            object = MyModel.objects.get(...)
+            return redirect(object, permanent=True)
+
+Form.is_valid()
+---------------
+Главной задачей объекта Form является проверка данных. У заполненного экземпляра Form вызовите метод is_valid() для выполнения проверки и получения её результата:
+
+        >>> data = {'subject': 'hello',
+        ...         'message': 'Hi there',
+        ...         'sender': 'foo@example.com',
+        ...         'cc_myself': True}
+        >>> f = ContactForm(data)
+        >>> f.is_valid()
+        True
+Начнём с неправильных данных. В этом случае поле subject будет пустым (ошибка, так как по умолчанию все поля должны быть заполнены), а поле sender содержит неправильный адрес электронной почты:
+
+        >>> data = {'subject': '',
+        ...         'message': 'Hi there',
+        ...         'sender': 'invalid email address',
+        ...         'cc_myself': True}
+        >>> f = ContactForm(data)
+        >>> f.is_valid()
+        False
+Form.errors
+-----------
+Обратитесь к атрибуту errors для получения словаря с сообщениями об ошибках:
+
+        >>> f.errors
+        {'sender': ['Enter a valid email address.'], 'subject': ['This field is required.']}
+В этом словаре, ключами являются имена полей, а значениями – списки юникодных строк, представляющих сообщения об ошибках. Сообщения хранятся в виде списков, так как поле может иметь множество таких сообщений.
+
+Обращаться к атрибуту errors можно без предварительного вызова методе call is_valid(). Данные формы будут проверены при вызове метода is_valid() или при обращении к errors.
+
+Процедуры проверки выполняются один раз, независимо от количества обращений к атрибуту errors или вызова метода is_valid(). Это означает, что если проверка данных имеет побочное влияние на состояние формы, то оно проявится только один раз.
+
+
+Доступ к “чистым” данным
+========================
+Form.cleaned_data
+-----------------
+Каждое поле в классе Form отвечает не только за проверку, но и за нормализацию данных. Это приятная особенность, так как она позволяет вводить данные в определённые поля различными способами, всегда получая правильный результат.
+
+После создания экземпляра Form, привязки данных и их проверки, вы можете обращаться к “чистым” данным через атрибут cleaned_data:
+
+        >>> data = {'subject': 'hello',
+        ...         'message': 'Hi there',
+        ...         'sender': 'foo@example.com',
+        ...         'cc_myself': True}
+        >>> f = ContactForm(data)
+        >>> f.is_valid()
+        True
+        >>> f.cleaned_data
+        {'cc_myself': True, 'message': 'Hi there', 'sender': 'foo@example.com', 'subject': 'hello'}
+Следует отметить, что любое текстовое поле, такое как CharField или EmailField, всегда преобразует текст в юникодную строку. Мы рассмотрим применения кодировок далее.
+
+Если данные не прошли проверку, то атрибут cleaned_data будет содержать только значения тех полей, что прошли проверку:
+
+        >>> data = {'subject': '',
+        ...         'message': 'Hi there',
+        ...         'sender': 'invalid email address',
+        ...         'cc_myself': True}
+        >>> f = ContactForm(data)
+        >>> f.is_valid()
+        False
+        >>> f.cleaned_data
+        {'cc_myself': True, 'message': 'Hi there'}
+Атрибут cleaned_data всегда содержит только данные для полей, определённых в классе Form, даже если вы передали дополнительные данные при определении Form. В этом примере, мы передаём набор дополнительных полей в конструктор ContactForm, но cleaned_data содержит только поля формы:
+
+        >>> data = {'subject': 'hello',
+        ...         'message': 'Hi there',
+        ...         'sender': 'foo@example.com',
+        ...         'cc_myself': True,
+        ...         'extra_field_1': 'foo',
+        ...         'extra_field_2': 'bar',
+        ...         'extra_field_3': 'baz'}
+        >>> f = ContactForm(data)
+        >>> f.is_valid()
+        True
+        >>> f.cleaned_data # Doesn't contain extra_field_1, etc.
+        {'cc_myself': True, 'message': 'Hi there', 'sender': 'foo@example.com', 'subject': 'hello'}
+Если Form прошла проверку, то cleaned_data будет содержать ключ и значение для всех полей формы, даже если данные не включают в себя значение для некоторых необязательных полей. В данном примере, словарь данных не содержит значение для поля nick_name, но cleaned_data содержит пустое значение для него:
+
+        >>> from django.forms import Form
+        >>> class OptionalPersonForm(Form):
+        ...     first_name = CharField()
+        ...     last_name = CharField()
+        ...     nick_name = CharField(required=False)
+        >>> data = {'first_name': 'John', 'last_name': 'Lennon'}
+        >>> f = OptionalPersonForm(data)
+        >>> f.is_valid()
+        True
+        >>> f.cleaned_data
+        {'nick_name': '', 'first_name': 'John', 'last_name': 'Lennon'}
+
+
+EmailField
+-----------
+    class EmailField([max_length=75, **options])
+Поле CharField для хранения правильного email-адреса.
+
+Значение max_length в 75 символов не достаточно для хранения всех возможных значений в соответствии RFC3696/5321. Для хранения всех возможных вариантов необходимо значение max_length в 254. Значение в 75 символов сложилось исторически и не изменяется для обратной совместимости.
+
+DecimalField
+-------------
+        class DecimalField(max_digits=None, decimal_places=None[, **options])
+Десятичное число с фиксированной точностью, представленное объектом Decimal Python. Принимает два обязательных параметра:
+
+- DecimalField.max_digits
+Максимальное количество цифр в числе - это число должно быть больше или равно decimal_places.
+
+- DecimalField.decimal_places
+Количество знаков после запятой.
+
+Например, для хранения числа до 999 с двумя знаками после запятой, используйте:
+
+- models.DecimalField(..., max_digits=5, decimal_places=2)
+Для хранения числа до миллиарда и 10 знаков после запятой:
+
+- models.DecimalField(..., max_digits=19, decimal_places=10)
+Виджет по умолчанию для этого поля TextInput.
+
+
+PositiveIntegerField
+---------------------
+        class PositiveIntegerField([**options])
+Как и поле IntegerField, но значение должно быть больше или равно нулю (0). Можно использовать значение от 0 до 2147483647. Значение 0 принимается для обратной совместимости.
+
+Orders
+======
+shop/models.py
+---------------
+
+        @python_2_unicode_compatible
+        class Order(models.Model):
+            first_name = models.CharField(max_length=50)
+            last_name = models.CharField(max_length=50)
+            email = models.EmailField()
+            address = models.CharField(max_length=250)
+            postal_code = models.CharField(max_length=20)
+            city = models.CharField(max_length=100)
+            created = models.DateTimeField(auto_now_add=True)
+            updated = models.DateTimeField(auto_now=True)
+            paid = models.BooleanField(default=False)
+
+            class Meta:
+                ordering = ('-created',)
+
+            def __str__(self):
+                return 'Order {}'.format(self.id)
+
+            def get_total_cost(self):
+                return sum(item.get_cost() for item in self.items.all())
+
+        @python_2_unicode_compatible
+        class OrderItem(models.Model):
+            order = models.ForeignKey(Order, related_name='items')
+            product = models.ForeignKey(Product, related_name='order_items')
+            price = models.DecimalField(max_digits=10, decimal_places=2)
+            quantity = models.PositiveIntegerField(default=1)
+
+            def __str__(self):
+                return '{}'.format(self.id)
+
+            def get_cost(self):
+                return self.price * self.quantity
+
+
+ModelAdmin.raw_id_fields
+-------------------------
+По умолчанию Django использует select для полей ForeignKey. Если связанных объектов очень много, создание select может быть очень затратным процессом.
+
+raw_id_fields содержит список полей, которые будут использовать поле Input для ForeignKey или ManyToManyField:
+
+        class ArticleAdmin(admin.ModelAdmin):
+            raw_id_fields = ("newspaper",)
+Виджет поля для raw_id_fields будет содержать значение первичного ключа для ForeignKey или список ключей для ManyToManyField. Возле поля есть кнопка поиска и выбора связанных объектов
+
+
+Объект InlineModelAdmin
+-----------------------
+- class InlineModelAdmin
+- class TabularInline
+- class StackedInline
+
+Интерфейс администратора позволяет редактировать связанные объекты на одной странице с родительским объектом. Это называется “inlines”. Например, у нас есть две модели:
+
+    from django.db import models
+
+    class Author(models.Model):
+       name = models.CharField(max_length=100)
+
+    class Book(models.Model):
+       author = models.ForeignKey(Author)
+       title = models.CharField(max_length=100)
+
+Вы можете редактировать книги автора на странице редактирования автора. Вы добавляете “inlines” к модели добавив их в ModelAdmin.inlines:
+
+        from django.contrib import admin
+
+        class BookInline(admin.TabularInline):
+            model = Book
+
+        class AuthorAdmin(admin.ModelAdmin):
+            inlines = [
+                BookInline,
+            ]
+Django предоставляет два подкласса InlineModelAdmin:
+----------------------------------------------------
+- TabularInline
+- StackedInline
+Разница между ними только в используемом шаблоне.
+
+Параметры InlineModelAdmin
 ---------------------------
-https://twitter.com/settings/widgets/new
+InlineModelAdmin содержит некоторые возможности ModelAdmin и собственные. Общие методы и атрибуты определены в классе BaseModelAdmin:
+
+form
+fieldsets
+fields
+formfield_overrides
+exclude
+filter_horizontal
+filter_vertical
+ordering
+prepopulated_fields
+get_queryset()
+radio_fields
+readonly_fields
+raw_id_fields
+formfield_for_choice_field()
+formfield_for_foreignkey()
+formfield_for_manytomany()
+has_add_permission()
+has_change_permission()
+has_delete_permission()
+
+Параметры класса InlineModelAdmin:
+----------------------------------
+- InlineModelAdmin.model
+Модель используемая в “inline”. Обязательный параметр.
+
+- InlineModelAdmin.fk_name
+Название внешнего ключа модели. В большинстве случаев он определяется автоматически, но вы должны указать fk_name, если модель содержит несколько внешних ключей к родительской модели.
+
+- InlineModelAdmin.formset
+По умолчанию – BaseInlineFormSet. Использование собственного класса предоставляет большие возможности для переопределения поведения по умолчанию. Смотрите раздел о наборах модельных форм.
+
+- InlineModelAdmin.form
+Значение form по умолчанию – ModelForm. Это значение передается в inlineformset_factory() при создании набора форм.
+
+При добавлении собственной валидации в форму InlineModelAdmin, учитывайте состояние родительской модели. Если родительская форма не пройдет валидацию, она может содержать не консистентные данные.
+
+- InlineModelAdmin.extra
+Указывает количество пустых форм для добавления объектов в наборе форм. Подробности смотрите в разделе о наборе форм.
+
+Если JavaScript включен в браузере, ссылка “Add another” позволит добавить новую пустую форму в дополнение к формам указанным параметром extra.
+
+Ссылка не появится если количество отображаемых форм превышает значение в параметре max_num, или если у пользователя отключен JavaScript.
+
+InlineModelAdmin.get_extra() позволяет указать количество дополнительных форм.
+
+- InlineModelAdmin.max_num
+Указывает максимальное количество форм. Этот параметр не определяет количество связанных объектов. Подробности смотрите в разделе Ограничение количества редактируемых объектов.
+
+InlineModelAdmin.get_max_num() позволяет указать максимальное количество дополнительных форм.
+
+- InlineModelAdmin.min_num
+Указывает минимальное количество отображаемых форм.
+
+InlineModelAdmin.get_min_num() позволяет указать минимальное количество отображаемых форм.
+
+- InlineModelAdmin.raw_id_fields
+По умолчанию Django использует select для полей ForeignKey. Если связанных объектов очень много, создание select может быть очень затратным процессом.
+
+- raw_id_fields – список полей которые должны использовать Input виджет для полей ForeignKey или ManyToManyField:
+
+        class BookInline(admin.TabularInline):
+            model = Book
+            raw_id_fields = ("pages",)
+        InlineModelAdmin.template
+Шаблон для отображения.
+-----------------------
+- InlineModelAdmin.verbose_name
+Позволяет переопределить значение verbose_name класса Meta модели.
+
+- InlineModelAdmin.verbose_name_plural
+Позволяет переопределить значение verbose_name_plural класса Meta модели.
+
+- InlineModelAdmin.can_delete
+Определяет можно ли удалять связанные объекты. По умолчанию равно True.
+
+- InlineModelAdmin.get_formset(request, obj=None, **kwargs)
+Возвращает BaseInlineFormSet, который будет использоваться на странице создания/редактирования.
+
+- InlineModelAdmin.get_extra(request, obj=None, **kwargs)
+Возвращает количество форм. По умолчанию возвращает значение атрибута InlineModelAdmin.extra.
+
+Вы можете переопределить метод и добавить логику для определения количества форм. Например, учитывать данные объекта модели(передается как именованный аргумент obj):
+
+        class BinaryTreeAdmin(admin.TabularInline):
+            model = BinaryTree
+
+            def get_extra(self, request, obj=None, **kwargs):
+                extra = 2
+                if obj:
+                    return extra - obj.binarytree_set.count()
+                return extra
+
+- InlineModelAdmin.get_max_num(request, obj=None, **kwargs)
+Возвращает максимальное количество дополнительных форм. По умолчанию возвращает значение атрибута InlineModelAdmin.max_num.
+
+Вы можете переопределить метод и добавить логику для определения максимального количества форм. Например, учитывать данные объекта модели(передается как именованный аргумент obj):
+
+        class BinaryTreeAdmin(admin.TabularInline):
+            model = BinaryTree
+
+            def get_max_num(self, request, obj=None, **kwargs):
+                max_num = 10
+                if obj.parent:
+                    return max_num - 5
+                return max_num
+- InlineModelAdmin.get_min_num(request, obj=None, **kwargs)
+Возвращает минимальное количество дополнительных форм. По умолчанию возвращает значение атрибута InlineModelAdmin.min_num.
+
+Вы можете переопределить метод и добавить логику для определения минимального количества форм. Например, учитывать данные объекта модели(передается как именованный аргумент obj).
 
 
-        <a class="twitter-timeline" href="https://twitter.com/janusnic" data-widget-id="730735893250772992">Tweets by @janusnic</a>
-        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+shop/admin.py
+--------------
+
+from django.contrib import admin
+from .models import Order, OrderItem
 
 
-
-кнопки для авторизации через социальные сети:
-
-        <a href="{% url 'social:begin' "vk-oauth2" %}" class="vk sn-logo"></a>
-
-        <a href="{% url 'social:begin' "facebook" %}" class="fb sn-logo"></a>
-
-        <a href="{% url 'social:begin' "google-oauth2" %}" class="google sn-logo"></a>
+class OrderItemInline(admin.TabularInline):
+    model = OrderItem
+    raw_id_fields = ['product']
 
 
-test
------
-        ()
-        ================================================================================
-        {'backend': <social.backends.facebook.FacebookOAuth2 object at 0x7f18746d6828>,
-         'is_new': True,
-         'new_association': True,
-         'pipeline_index': 11,
-         'request': {'code': 'AQCqTFlaSo3zNTXwKYR505XwQiDZK9_XGbTEcYnnzIJUj0gSHeNnAp0K_IbmoQZ2g3x4xitpe_IsKm262sSNELfO_PW3MIAkPMlZIcoZxZ98qYq8EIndsWwh3KhBn-3f4NauwfG0XbNT7B-A2NpKP9FCAWbT2Lj66DNvtW-5ggRylcd_FEray58oig9dzrnNkC92wotbBiDAd710hQZGTNcHG1yRMOO6RvTGdwg7kWw1OFiZhCX6LVuG2qI2cLqavKGuPXS0HsOrsKrV_5TJPsVw8hinN0JlRqtEN1ct5W0WbtCfl-Fg9_p6_tfQT9Dmr8eDBy2yMYmRU0wr-s6WLU8j',
-                     'redirect_state': '9KrrA4AbagAHKXy62AVfArG4BTumuB6t',
-                     'state': '9KrrA4AbagAHKXy62AVfArG4BTumuB6t'},
-         'social': <UserSocialAuth: JanusNicon>,
-         'storage': <class 'social.apps.django_app.default.models.DjangoStorage'>,
-         'strategy': <social.strategies.django_strategy.DjangoStrategy object at 0x7f18746d6940>,
-         'uid': '10206562804293631',
-         'user': <User: JanusNicon>,
-         'username': 'JanusNicon'}
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ['id', 'first_name', 'last_name', 'email', 'address', 'postal_code', 'city', 'paid', 'created', 'updated']
+    list_filter = ['paid', 'created', 'updated']
+    inlines = [OrderItemInline]
+    
+admin.site.register(Order, OrderAdmin)
 
+
+shop/views.py
+--------------
+
+        from django.shortcuts import render
+        from .models import OrderItem
+        from .forms import OrderCreateForm
+        from .tasks import order_created
+        from .cart import Cart
+
+        def order_create(request):
+            cart = Cart(request)
+            if request.method == 'POST':
+                form = OrderCreateForm(request.POST)
+                if form.is_valid():
+                    order = form.save()
+                    for item in cart:
+                        OrderItem.objects.create(order=order,
+                                                 product=item['product'],
+                                                 price=item['price'],
+                                                 quantity=item['quantity'])
+                    # clear the cart
+                    cart.clear()
+                    # launch task
+                    order_created(order.id)
+                    return render(request, 'shop/orders/created.html', {'order': order})
+            else:
+                form = OrderCreateForm()
+            return render(request, 'shop/orders/create.html', {'cart': cart,
+                                                        'form': form})
+
+shop/forms.py
+---------------
+```
+from django import forms
+from .models import Order
+
+class OrderCreateForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['first_name', 'last_name', 'email', 'address', 'postal_code', 'city']
+
+```
+shop/tasks.py
+---------------
+```
+from django.core.mail import send_mail
+from .models import Order
+
+def order_created(order_id):
+    """
+    Task to send an e-mail notification when an order is successfully created.
+    """
+    order = Order.objects.get(id=order_id)
+    subject = 'Order nr. {}'.format(order.id)
+    message = 'Dear {},\n\nYou have successfully placed an order. Your order id is {}.'.format(order.first_name,
+                                                                             order.id)
+    mail_sent = send_mail(subject, message, 'admin@myshop.com', [order.email])
+    return mail_sent
+
+```
+
+shop/orders/create.html
+-----------------------
+
+        {% extends "shop/base.html" %}
+
+        {% block title %}  Checkout {% endblock %}
+
+        {% block content %}
+            <h1>Checkout</h1>
+            <div class="order-info">
+                <h3>Your order</h3>
+                <ul>
+                    {% for item in cart %}
+                        <li>{{ item.quantity }}x {{ item.product.name }} <span>${{ item.total_price }}</span></li>
+                    {% endfor %}
+                </ul>
+                <p>Total: ${{ cart.get_total_price }}</p>
+            </div>
+            <form action="." method="post" class="order-form">
+                {{ form.as_p }}
+                <p><input type="submit" value="Place order"></p>
+                {% csrf_token %}
+            </form>
+        {% endblock %}
+
+
+shop/orders/created.html
+------------------------
+
+        {% extends "shop/base.html" %}
+
+        {% block title %}
+            Thank you
+        {% endblock %}
+
+        {% block content %}
+            <h1>Thank you</h1>
+            <p>Your order has been successfully completed. Your order number is <strong>{{ order.id }}</strong>.</p>
+        {% endblock %}
+
+
+shop/urls.py
+-------------
+
+        from django.conf.urls import url
+        from . import views
+
+        urlpatterns = [
+            url(r'^create/$', views.order_create, name='order_create'),
+        ]
+
+
+shop/product/detail.html
+------------------------
+
+            {% extends "shop/base.html" %}
+            {% load static %}
+
+            {% block title %}
+                Your shopping cart
+            {% endblock %}
+
+            {% block content %}
+                <h1>Your shopping cart</h1>
+                <table class="cart">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Remove</th>
+                            <th>Unit price</th>                
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in cart %}
+                        {% with product=item.product %}
+                        <tr>
+                            <td>
+                                <a href="{{ product.get_absolute_url }}">
+                                    <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}">
+                                </a>
+                            </td>
+                            <td>{{ product.name }}</td>
+                            <td>
+                                <form action="{% url "shop:cart_add" product.id %}" method="post">
+                                    {{ item.update_quantity_form.quantity }}
+                                    {{ item.update_quantity_form.update }}
+                                    <input type="submit" value="Update">
+                                    {% csrf_token %}
+                                </form>
+                            </td>
+                            <td><a href="{% url "shop:cart_remove" product.id %}">Remove</a></td>
+                            <td class="num">${{ item.price }}</td>
+                            <td class="num">${{ item.total_price }}</td>
+                        </tr>
+                        {% endwith %}
+                    {% endfor %}
+                    <tr class="total">
+                        <td>Total</td>
+                        <td colspan="4"></td>
+                        <td class="num">${{ cart.get_total_price }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p class="text-right">
+                    <a href="{% url "shop:product_list" %}" class="button light">Continue shopping</a>
+                    <a href="{% url "shop:order_create" %}" class="button">Checkout</a>
+                </p>
+            {% endblock %}
+
+Отправка электронных писем
+===========================
+Код находится в модуле django.core.mail.
+
+Пример
+```
+from django.core.mail import send_mail
+
+send_mail('Subject here', 'Here is the message.', 'from@example.com',
+    ['to@example.com'], fail_silently=False)
+```
+Письмо отправлено через SMTP хост и порт, которые указаны в настройках EMAIL_HOST и EMAIL_PORT. Настройки EMAIL_HOST_USER и EMAIL_HOST_PASSWORD, если указаны, используются для авторизации на SMTP сервере, а настройки EMAIL_USE_TLS и EMAIL_USE_SSL указывают использовать ли безопасное соединение.
+
+При отправке письма через django.core.mail будет использоваться кодировка из DEFAULT_CHARSET.
+send_mail()
+```
+send_mail(subject, message, from_email, recipient_list, fail_silently=False, auth_user=None, auth_password=None, connection=None, html_message=None)
+```
+Самый простой способ отправить письмо – использовать django.core.mail.send_mail().
+
+Параметры subject, message, from_email и recipient_list являются обязательными.
+-------------------------------------------------------------------------------
+1. subject: строка.
+2. message: строка.
+3. from_email: строка.
+4. recipient_list: список строк, каждая является email. Каждый получатель из recipient_list будет видеть остальных получателей в поле “To:” письма.
+5. fail_silently: булево. При False send_mail вызовет smtplib.SMTPException. 
+6. auth_user: необязательное имя пользователя, которое используется при авторизации на SMTP сервере. Если не указано, Django будет использовать значение EMAIL_HOST_USER.
+7. auth_password: необязательный пароль, который используется при авторизации на SMTP сервере. Если не указано, Django будет использовать значение EMAIL_HOST_PASSWORD.
+8. connection: необязательный бэкенд, который будет использоваться для отправки письма. Если не указан, будет использоваться бэкенд по умолчанию. 
+9. html_message: если html_message указано, письмо будет с multipart/alternative, и будет содержать message с типом text/plain, и html_message с типом text/html.
+
+Возвращает количество успешно отправленных писем (которое будет 0 или 1, т.к. функция отправляет только одно письмо).
+
+Пример
+------
+Отправляет одно письмо john@example.com и jane@example.com, они оба указаны в “To:”:
+```
+send_mail('Subject', 'Message.', 'from@example.com',
+    ['john@example.com', 'jane@example.com'])
+```
+
+Бэкенды для отправки электронной почты
+---------------------------------------
+Непосредственная отправка электронного письма происходит в бэкенде.
+
+Django предоставляет несколько бэкендов. Эти бэкенды, кроме SMTP (который используется по умолчанию), полезны только при разработке или тестировании. Вы можете создать собственный бэкенд.
+
+SMTP бэкенд
+===========
+
+Это бэкенд по умолчанию. Почта отправляется через SMTP сервер. Адрес сервера и параметры авторизации указаны в настройках EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_USE_TLS, EMAIL_USE_SSL, EMAIL_TIMEOUT, EMAIL_SSL_CERTFILE и EMAIL_SSL_KEYFILE.
+
+SMTP бэкенд используется в Django по умолчанию. Если вы хотите указать его явно, добавьте в настройки:
+```
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+```
+Dummy бэкенд
+------------
+Этот бэкенд ничего не делает с почтой. Чтобы указать этот бэкенд, добавьте следующее в настройки:
+```
+EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+```
+Этот бэкенд не следует использовать на боевом сервере, он создавался для разработки.
+
+Настройка почты при разработке
+==============================
+
+Самый простой способ настроить почту для разработки – использовать бэкенд console. Этот бэкенд перенаправляет всю почту в stdout, позволяя увидеть содержимое писем.
+
+Также можно использовать file. Этот бэкенд сохраняет содержимое каждого SMTP-соединения в файл.
+
+Еще один способ – использовать локальный SMTP-сервер, который принимает письма и выводит их в консоль, но никуда их не оправляет. Python позволяет создать такой сервер одной командой:
+```
+python -m smtpd -n -c DebuggingServer localhost:1025
+```
+Эта команда запускает простой SMTP-сервер, который слушает 1025 порт на localhost. Этот сервер выводит заголовки и содержимое полученных писем в консоль. Вам необходимо указать в настройках EMAIL_HOST и EMAIL_PORT. Подробности об этом SMTP-сервер смотрите в документации Python к модулю smtpd.
+
+settings.py
+-----------
+```
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_HOST_USER = 'janusnic@gmail.com'
+EMAIL_PORT = 1025
+
+```
+Пароли приложений Gmail
+=======================
+https://support.google.com/accounts/
+Если вы пользуетесь двухэтапной аутентификацией, то специальные пароли понадобятся вам для входа в некоторые приложения (например, Outlook или почтовый клиент на iPhone/Mac). Вам не нужно запоминать эти пароли – наша система сгенерирует их автоматически. Подробнее...
+
+Откройте настройки аккаунта Google на своем устройстве и введите шестнадцатизначный пароль, указанный выше.
+Этот пароль открывает приложению или устройству доступ к вашему аккаунту Google (как и обычный пароль). Его не нужно запоминать. Также просим вас не записывать его и никому не показывать.
+
+
+Create an Application specific password
+---------------------------------------
+- Visit your Google Account security page.
+- In the 2-Step Verification box, click Settings(if there is no settings link, you may want to create a new one. you can skip step 3 & 4).
+- Click the tab for App-specific passwords.
+- Click Manage your application specific passwords.
+- Under the Application-specific passwords section, enter a descriptive name for the application you want to authorize, such as "Django gmail" then click Generate application-specific password button.
+- note down the password. for example: smbumqjiurmqrywn 
+
+Then add the appropriate values to settings.py:
+------------------------------------------------
+```
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'your-username@gmail.com'
+EMAIL_HOST_PASSWORD = 'Application spectific password(for eg: smbumqjiurmqrywn)'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+```
+You can use the shell to test it:
+```
+python manage.py shell
+from django.core.mail import send_mail
+send_mail('Test', 'This is a test', 'your@email.com', ['toemail@email.com'],
+     fail_silently=False)
+```

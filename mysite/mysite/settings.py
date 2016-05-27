@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'blog',
     'userprofile',
     'home',
+    'shop',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -75,6 +76,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'social.apps.django_app.context_processors.backends',
                 'django.template.context_processors.request',
+                'shop.processors.context_processors.cart',
     
             ],
         },
@@ -209,3 +211,5 @@ CKEDITOR_UPLOAD_SLUGIFY_FILENAME = False
 CKEDITOR_RESTRICT_BY_USER = True
 CKEDITOR_BROWSE_SHOW_DIRS = True
 CKEDITOR_IMAGE_BACKEND = "pillow"
+
+CART_SESSION_ID = 'cart'

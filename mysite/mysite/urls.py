@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^$', view_home.index, name='index'),
     url(r'^soc/$', view_home.home, name='home'),
     url(r'^blog/', include('blog.urls', namespace="blog")),
+    url(r'^shop/', include('shop.urls', namespace='shop')),
     url(r'^contact/', include('contact.urls', namespace="contact")),
     url(r'^userprofile/', include('userprofile.urls', namespace="userprofile")),
     url(r'^admin/', admin.site.urls),
