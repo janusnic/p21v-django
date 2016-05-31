@@ -13,30 +13,23 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import include, url
+from django.conf.urls import url, include
 from django.contrib import admin
-from home import views as view_home
 from django.conf import settings
-from django.conf.urls.static import static
+from rest_framework.routers import DefaultRouter
+from users.views import UserViewSet
+
+router = DefaultRouter()
+router.register(r'users', UserViewSet)
 
 urlpatterns = [
-    url(r'^$', view_home.index, name='index'),
-    url(r'^soc/$', view_home.home, name='home'),
-    url(r'^blog/', include('blog.urls', namespace="blog")),
-    url(r'^shop/', include('shop.urls', namespace='shop')),
-    url(r'^contact/', include('contact.urls', namespace="contact")),
-    url(r'^userprofile/', include('userprofile.urls', namespace="userprofile")),
     url(r'^admin/', admin.site.urls),
-    url(r'^ckeditor/', include('ckeditor_uploader.urls')),
-    url(r'', include('social.apps.django_app.urls', namespace='social'))
+    url(r'^api/', include('blab.urls', namespace='blab')),
+    url(r'^api/v1/', include('authentication.urls')),
+    url(r'^api/v1/', include(router.urls)),
+       
 ]
 if settings.DEBUG:
-    try:
-        from django.conf.urls.static import static
-        urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-    # Should only occur when debug mode is on for production testing
-    except ImportError as e:
-        import logging
-        l = logging.getLogger(__name__)
-        l.warning(e)
+    from django.conf.urls.static import static
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
